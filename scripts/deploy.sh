@@ -8,7 +8,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-if [[ "${1:-}" != "--skip-checks" ]]; then
+if [[ "${1:-}" == "--skip-checks" ]]; then
+  shift # consume it: the rest of the arguments are forwarded to fly deploy
+else
   npm run typecheck
   npm test
 fi
