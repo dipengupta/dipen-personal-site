@@ -41,6 +41,11 @@ export function middleware(req: NextRequest) {
   requestHeaders.set('x-site-view', decision.view);
 
   if (decision.kind === 'rewrite') {
+    // Clone req.nextUrl (Next's internal origin) rather than building a URL on
+    // the Host header: Next relativizes the rewrite against its own origin and
+    // treats any other host as an external rewrite. Verified in the container
+    // (HOSTNAME=0.0.0.0) and with the default `next start` bind; binding the
+    // server to 127.0.0.1 is the one setup that breaks it.
     const url = req.nextUrl.clone();
     url.pathname = decision.path;
     return NextResponse.rewrite(url, { request: { headers: requestHeaders } });

@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start -H 127.0.0.1",
+    "start": "next start",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx --tsconfig tsconfig.scripts.json scripts/migrate.ts",
@@ -23,10 +23,7 @@
     "media:check": "tsx --tsconfig tsconfig.scripts.json scripts/media/check.ts",
     "content:recipe": "tsx --tsconfig tsconfig.scripts.json scripts/content/new-recipe.ts",
     "content:article": "tsx --tsconfig tsconfig.scripts.json scripts/content/new-article.ts",
-    "content:tweets": "tsx --tsconfig tsconfig.scripts.json scripts/content/add-tweets.ts",
-    "build:info": "tsx --tsconfig tsconfig.scripts.json scripts/build-info.ts",
-    "prebuild": "npm run build:info",
-    "predev": "npm run build:info"
+    "content:tweets": "tsx --tsconfig tsconfig.scripts.json scripts/content/add-tweets.ts"
   },
   "dependencies": {
     "better-sqlite3": "^11.10.0",

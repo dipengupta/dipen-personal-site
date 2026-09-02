@@ -7,6 +7,7 @@ import type { Db } from '../db/client';
 import * as schema from '../db/schema';
 import { playlistIdFromUrl } from '../fetchers/spotify';
 import { parseArticleTemplate } from './parseArticle';
+import { slugify } from '../content/slug';
 
 const SEED_DIR = path.join(process.cwd(), 'src', 'data', 'seed');
 
@@ -92,6 +93,8 @@ const SEED_UNITS: SeedUnit[] = [
       const files = articleFiles(seedDir);
       if (files.length === 0) return null;
       const hash = crypto.createHash('sha256');
+      // Bump when derived columns change (slug scheme, sanitizer) so deploys re-seed.
+      hash.update('articles-v2');
       for (const file of files) {
         hash.update(file);
         hash.update(fs.readFileSync(path.join(seedDir, 'articles', file)));
@@ -106,7 +109,7 @@ const SEED_UNITS: SeedUnit[] = [
         const parsed = parseArticleTemplate(fs.readFileSync(path.join(seedDir, 'articles', file), 'utf8'));
         db.insert(schema.articles)
           .values({
-            slug: `article${num}`,
+            slug: slugify(parsed.title) || `article${num}`,
             title: parsed.title,
             sourceUrl: parsed.sourceUrl,
             sourceLabel: parsed.sourceLabel,

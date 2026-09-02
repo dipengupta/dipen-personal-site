@@ -87,14 +87,14 @@ describe('refreshArticlesIfStale', () => {
     const original = db
       .select()
       .from(schema.articles)
-      .where(eq(schema.articles.slug, 'article10'))
+      .where(eq(schema.articles.slug, 'reversing-into-learners-mindset'))
       .get()!;
     await refreshArticlesIfStale(db, (async () =>
       okResponse(fixture('substack-feed.xml'))) as typeof fetch);
     const after = db
       .select()
       .from(schema.articles)
-      .where(eq(schema.articles.slug, 'article10'))
+      .where(eq(schema.articles.slug, 'reversing-into-learners-mindset'))
       .get()!;
     expect(after.bodyHtml).toBe(original.bodyHtml);
   });

@@ -5,7 +5,7 @@ import { slugify } from '@/lib/main/slug';
 
 describe('slugify', () => {
   it('produces stable URL slugs', () => {
-    expect(slugify("Grandma's Khao Soi & Rice")).toBe('grandma-s-khao-soi-and-rice');
+    expect(slugify("Grandma's Khao Soi & Rice")).toBe('grandmas-khao-soi-and-rice');
     expect(slugify('  Café  au Lait ')).toBe('cafe-au-lait');
   });
 });

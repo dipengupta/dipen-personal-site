@@ -22,8 +22,9 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run build && npm run seed && npm run start',
-    // Subdomain mode on *.localhost for e2e/hostRouting.spec.ts; path URLs keep working (never canonicalized on localhost).
-    env: { SITE_DOMAIN: 'localhost', NEXT_DIST_DIR: '.next-e2e' },
+    // Subdomain mode on *.site.localhost for e2e/hostRouting.spec.ts (Chromium resolves any *.localhost
+    // to loopback). Plain localhost:3000 stays off-domain, so the path URLs the other suites use keep working.
+    env: { SITE_DOMAIN: 'site.localhost', NEXT_DIST_DIR: '.next-e2e' },
     url: 'http://localhost:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,

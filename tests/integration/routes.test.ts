@@ -142,12 +142,12 @@ describe('/api/articles', () => {
     const res = await getArticles();
     const { items } = await res.json();
     expect(items).toHaveLength(10);
-    expect(items[0].slug).toBe('article10');
-    expect(items[9].slug).toBe('article1');
+    expect(items[0].slug).toBe('reversing-into-learners-mindset');
+    expect(items[9].slug).toBe('a-case-for-doing-masters-in-computer-science-at-penn-state-harrisburg');
   });
 
   it('serves one article body by slug', async () => {
-    const res = await getArticle(req, params({ slug: 'article1' }));
+    const res = await getArticle(req, params({ slug: 'a-case-for-doing-masters-in-computer-science-at-penn-state-harrisburg' }));
     const { article } = await res.json();
     expect(article.bodyHtml).toContain('<p>');
   });

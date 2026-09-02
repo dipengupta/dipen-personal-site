@@ -1,91 +1,86 @@
-# dipen-ipod-classic
+# dipen-personal-site
 
-Dipen's personal website, rebuilt as a 1:1 **iPod Classic**. Spin the click
-wheel (or use the arrow keys) to browse guitars and photos in Cover Flow,
-read articles, flip through a 64-mug collection, watch YouTube videos, and
-play SoundCloud tracks — all inside a 320×240 screen.
+Dipen Gupta's personal website, served three ways from one app and one
+database:
+
+| View | Where | What |
+| --- | --- | --- |
+| Main site | `/` (dipengupta.com) | A regular, fast website: music, collections, about, misc, global search |
+| iPod | `/ipod` (ipod.dipengupta.com) | A 1:1 iPod Classic with a click wheel; works on phones |
+| iTunes | `/itunes` (itunes.dipengupta.com) | An iTunes-7 window; desktop only |
+
+All three read the same SQLite file, so a new recipe, photo, tweet or video
+shows up everywhere at once. Media (photos, videos) lives outside the repo.
 
 ## Quickstart
 
-### Local development
-
 ```bash
+nvm use            # Node 22 (see .nvmrc)
 npm install
-npm run seed      # creates + populates data/ipod.db
-npm run dev       # http://localhost:3000
+npm run seed       # creates + fills data/site.db from src/data/seed
+npm run dev        # http://localhost:3000
 ```
+
+Photos and videos are not in git. Put them in `./media` (`scripts/media/pull-fly.sh`
+restores from production, or re-ingest originals with `npm run media:ingest`);
+without them pages render with soft placeholders. `npm run media:check` reports
+what is missing.
+
+Subdomain mode in development: `http://ipod.localhost:3000/` and
+`http://itunes.localhost:3000/` work in Chrome and Safari without any DNS setup.
 
 ### Docker
 
 ```bash
-docker compose up --build   # http://localhost:3000
+docker compose up --build   # http://localhost:3000, ./media mounted read-only
 ```
 
-The container applies migrations and seeds an empty database on first boot;
-content persists in the `ipod-data` volume.
+### Production
 
-### Hosting
-
-The same image deploys to Fly.io with `fly deploy` (config in `fly.toml`);
-see the Deployment section of [docs/architecture.md](docs/architecture.md).
-
-## Controls
-
-| Action          | Touch (mobile)              | Keyboard (desktop)    |
-| --------------- | --------------------------- | --------------------- |
-| Scroll          | Drag a circle on the wheel  | ↑ / ↓                 |
-| Select / flip   | Tap the center button       | Enter                 |
-| Back (MENU)     | Tap the top of the wheel    | Esc, Backspace, or M  |
-| Prev / Next     | Tap wheel left / right      | ← / →                 |
-| Play / Pause    | Tap the bottom of the wheel | Space                 |
-
-Prev/Next skip tracks while something is playing (media keeps playing when
-you browse away — like a real iPod); otherwise they step the selection.
-
-Don't miss the **Misc** section: photos, kitchen wins, concert
-history, amusing Wi-Fi names, and more.
-
-Scrolling clicks like the real thing (synthesized Web Audio tick) and vibrates
-on devices that support it (Android). The theme switcher in `Extras →
-Settings` swaps between the silver and black iPod.
+One Fly machine, one volume (`/data`: database + media). `scripts/deploy.sh`
+runs the checks and `fly deploy`; `scripts/media/push-fly.sh` copies new media
+to the volume. See `docs/runbooks/deploy.md`.
 
 ## Commands
 
-| Command              | What it does                                  |
-| -------------------- | --------------------------------------------- |
-| `npm run dev`        | Next.js dev server                            |
-| `npm run build`      | Production build (standalone output)          |
-| `npm run seed`       | Migrate + seed the SQLite DB (skip if seeded) |
-| `npm run seed:force` | Wipe and reseed                               |
-| `npm run optimize:images` | Convert new images to right-sized WebP   |
-| `npm run import:ugg` | Import UGG videos + captions (`-- --source "<dir>"`) |
-| `npm run db:generate`| Generate a Drizzle migration from schema.ts   |
-| `npm test`           | Vitest unit + integration tests               |
-| `npm run e2e`        | Playwright end-to-end suite (builds + seeds)  |
-| `npm run typecheck`  | `tsc --noEmit`                                |
+| Command | What it does |
+| --- | --- |
+| `npm run dev` / `build` / `start` | Next.js dev server / production build / serve the build |
+| `npm run seed` / `seed:force` | Migrate + sync seed data (only changed tables) / wipe and rebuild |
+| `npm run db:generate` | Generate a Drizzle migration after editing `src/lib/db/schema.ts` |
+| `npm test` / `test:watch` | Vitest unit + integration (offline, ~2 s) |
+| `npm run e2e` / `e2e:ui` | Playwright: builds into `.next-e2e`, seeds, serves, tests all three views |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run media:ingest` | Normalize photos into `media/` + the manifest (see runbook) |
+| `npm run media:check` | Verify references vs manifest vs files on disk |
+| `npm run content:recipe` / `content:article` / `content:tweets` | Add content to the seed files |
+| `npm run import:ugg:instagram` | Import new UGG Chronicles episodes from an Instagram export |
+| `npm run import:spotify` | Refresh the committed Spotify preview seed |
+
+## Routine tasks
+
+Each has a runbook in `docs/runbooks/`:
+[add a recipe](docs/runbooks/add-recipe.md),
+[add photos](docs/runbooks/add-images.md),
+[add an article](docs/runbooks/add-article.md),
+[add tweets](docs/runbooks/add-tweets.md),
+[import UGG videos](docs/runbooks/import-ugg.md),
+[sync media](docs/runbooks/media-sync.md),
+[deploy](docs/runbooks/deploy.md),
+[add a view](docs/runbooks/add-view.md),
+[add a content section](docs/runbooks/add-section.md).
 
 ## Environment
 
-Copy `.env.example` to `.env` if you need overrides. `DATABASE_PATH` points at
-the SQLite file (defaults to `./data/ipod.db`; `/data/ipod.db` in Docker).
-`VIDEOS_DIR` points at the UGG Chronicles videos (defaults to
-`./data/videos/ugg`; put them on the volume at `/data/videos/ugg` in Docker).
-Secrets live in `.env` only — never in code.
+Copy `.env.example` to `.env` for overrides. `DATABASE_PATH` (SQLite file),
+`MEDIA_DIR` (media root), `SITE_DOMAIN` (enables subdomain routing and
+canonical redirects), `SITE_URL` (sitemap origin when there is no domain),
+`CSP_ENFORCE=1` (turn the report-only Content Security Policy into an
+enforced one). No API keys are needed anywhere.
 
-## Data: live vs. seeded
+## Where things are
 
-| Content                  | Source of truth                                            |
-| ------------------------ | ---------------------------------------------------------- |
-| YouTube videos           | Seeded archive + live channel RSS merge (6h cache)        |
-| Articles                 | 10 seeded full-text articles + Substack RSS additions (24h cache) |
-| SoundCloud               | Live track list + audio via the hidden persistent widget   |
-| Music recommendations    | Curated playlists; Spotify tracks + 30s preview audio via the keyless embed feed (6h cache, committed seed fallback), Apple Music deep-links out; refresh via `npm run import:spotify` |
-| Instagram (UGG Chronicles) | Local MP4s in `data/videos/ugg` (gitignored) + committed `src/data/seed/ugg.json`; refresh via `npm run import:ugg` |
-| Tweets (pennguytweets)   | Scraped @20swithepennguy export, 768 tweets committed in `src/data/seed/tweets.json` |
-| Guitars, mugs, places, timeline, links | Seeded from `src/data/seed/*.json`          |
-
-Live fetchers never leave the screen blank: on any failure they fall back to
-the seeded data and retry on the next staleness check.
-
-See [docs/architecture.md](docs/architecture.md) for how it all fits together
-and how to add a new section.
+- `docs/architecture.md`: how it fits together (read before structural changes)
+- `docs/adr/`: why SQLite, why media is outside git, why the URL picks the view
+- `docs/tasks.md`: backlog
+- `CLAUDE.md` / `AGENTS.md`: rules and checklists for coding agents
