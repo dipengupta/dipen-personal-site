@@ -33,7 +33,7 @@ jobs:
       - run: npx playwright install --with-deps chromium
       # Media is not in git: pages render with placeholders, which the suite tolerates.
       - run: npm run e2e
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: failure()
         with:
           name: playwright-report
