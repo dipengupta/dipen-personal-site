@@ -27,7 +27,7 @@
     "media:posters": "tsx --tsconfig tsconfig.scripts.json scripts/media/video-posters.ts"
   },
   "dependencies": {
-    "better-sqlite3": "^11.10.0",
+    "better-sqlite3": "^13.0.3",
     "drizzle-orm": "^0.44.2",
     "exif-reader": "^2.0.3",
     "fast-xml-parser": "^4.5.3",
