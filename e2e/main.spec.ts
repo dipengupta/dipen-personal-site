@@ -5,7 +5,7 @@ import { expect, test } from '@playwright/test';
 // desktop and the phone project.
 
 const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
-  { path: '/music/guitars', heading: /Guitars/, item: '[data-testid="photo-grid"] figure' },
+  { path: '/music/guitars', heading: /Guitars/, item: '[data-testid="guitar-timeline"] li img' },
   { path: '/music/youtube', heading: /YouTube/, item: 'article[id^="yt-"]' },
   { path: '/music/instagram', heading: /UGG Chronicles/, item: 'article[id^="ugg-"] img' },
   { path: '/music/soundcloud', heading: /SoundCloud/, item: 'iframe.embed' },
@@ -13,7 +13,6 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
   { path: '/collections/articles', heading: /Articles/, item: '[data-testid="article-list"] li' },
   { path: '/collections/mugs-vinyls-and-magnets', heading: /Mugs, Vinyls and Magnets/, item: 'li[id^="mug-"]' },
   { path: '/collections/recipes', heading: /Recipes and Spice Blends/, item: 'li[id^="spice-"] a' },
-  { path: '/collections/kitchen-wins', heading: /Kitchen Wins/, item: '[data-testid="photo-grid"] figure' },
   { path: '/collections/alison', heading: /Alison/, item: '[data-testid="photo-grid"] figure' },
   { path: '/collections/pennguytweets', heading: /pennguytweets/, item: '[data-testid="tweet-feed"] li' },
   { path: '/about/academic', heading: /Academic/, item: 'article[id^="project-"]' },
@@ -30,12 +29,20 @@ test.describe('main site', () => {
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: /Hi, I'm Dipen/ })).toBeVisible();
-    await expect(page.getByTestId('hero').locator('img.is-current')).toHaveCount(1);
+    await expect(page.getByTestId('hero').locator('.hero-slide.is-current')).toHaveCount(1);
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
     await expect(page.locator('.index-row')).toHaveCount(4);
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);
     await expect(page.getByTestId('view-card-itunes')).toHaveAttribute('href', /itunes/);
     await expect(page.getByTestId('mosaic').locator('img').first()).toBeAttached();
+    // Dragging the mosaic moves the strip and does not follow a tile link.
+    const strip = page.getByTestId('mosaic');
+    const box = (await strip.boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(box.x + box.width / 2 - 120, box.y + box.height / 2, { steps: 8 });
+    await page.mouse.up();
+    await expect(page).toHaveURL(/\/$/);
     await expect(page.getByTestId('made-by')).toContainText(/Made from scratch by Dipen, last updated \w{3} '\d{2}/);
     expect(errors).toEqual([]);
   });
@@ -112,13 +119,13 @@ test.describe('main site', () => {
   });
 
   test('the photo lightbox opens and steps', async ({ page }) => {
-    await page.goto('/collections/kitchen-wins');
+    await page.goto('/collections/alison');
     await page.locator('[data-testid="photo-grid"] figure button').first().click();
     const dialog = page.locator('dialog.lightbox');
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator('img')).toHaveAttribute('src', /\/media\/images\/contact\//);
+    await expect(dialog.locator('img')).toHaveAttribute('src', /\/media\/images\/alison\//);
     await page.keyboard.press('ArrowRight');
-    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 10');
+    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 95');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });
@@ -147,7 +154,7 @@ test.describe('main site on a phone', () => {
   });
 
   test('nothing scrolls sideways', async ({ page }) => {
-    for (const path of ['/', '/music/guitars', '/collections/pennguytweets', '/about/academic']) {
+    for (const path of ['/', '/music/guitars', '/collections/recipes', '/collections/pennguytweets', '/about/academic']) {
       await page.goto(path);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, path).toBeLessThanOrEqual(1);

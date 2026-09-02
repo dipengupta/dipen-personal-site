@@ -50,19 +50,20 @@ export default function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
           </div>
         </div>
         <div className="footer-bottom">
-          <div className="socials" aria-label="Elsewhere">
-            {SOCIALS.map((s) => (
-              <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer">
-                <SocialIcon id={s.id} />
-                {s.label}
-              </a>
-            ))}
+          <p className="muted" style={{ margin: 0 }} data-testid="made-by">
+            {FOOTER.madeBy}, {FOOTER.lastUpdatedPrefix} {lastUpdatedLabel()}
+          </p>
+          <div className="footer-tools">
+            <div className="socials socials-icons" aria-label="Elsewhere">
+              {SOCIALS.map((s) => (
+                <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer" aria-label={s.label} title={s.label}>
+                  <SocialIcon id={s.id} />
+                </a>
+              ))}
+            </div>
+            <ThemeToggle />
           </div>
-          <ThemeToggle />
         </div>
-        <p className="muted" style={{ marginTop: '1.5rem', marginBottom: 0 }} data-testid="made-by">
-          {FOOTER.madeBy}, {FOOTER.lastUpdatedPrefix} {lastUpdatedLabel()}
-        </p>
       </div>
     </footer>
   );

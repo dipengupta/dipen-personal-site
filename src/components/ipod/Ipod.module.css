@@ -32,30 +32,31 @@
 
 .links {
   position: fixed;
-  top: 18px;
-  right: 22px;
+  top: 22px;
+  right: 26px;
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 13px;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
   letter-spacing: 0.01em;
 }
 
 .viewLink {
-  color: #2b2d33;
+  color: #fff;
   text-decoration: none;
-  background: rgba(255, 255, 255, 0.72);
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  background: #26282e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 999px;
-  padding: 7px 14px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(6px);
+  padding: 10px 18px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+  transition: transform 0.15s ease, background 0.15s ease;
 }
 
 [data-theme='black'] .viewLink {
-  color: #e8e8ea;
-  background: rgba(30, 30, 34, 0.7);
-  border-color: rgba(255, 255, 255, 0.2);
+  color: #1c1c1e;
+  background: #f2f2f4;
+  border-color: rgba(0, 0, 0, 0.15);
 }
 
 .linkSep {
@@ -63,12 +64,12 @@
 }
 
 .viewLink:hover {
-  background: #fff;
-  border-color: rgba(0, 0, 0, 0.35);
+  background: #000;
+  transform: translateY(-1px);
 }
 
 [data-theme='black'] .viewLink:hover {
-  background: rgba(50, 50, 56, 0.9);
+  background: #fff;
 }
 
 /* Mobile: device is the page */

@@ -41,7 +41,7 @@ export default async function HomePage() {
   }));
   const mosaic: MosaicImage[] = interleave(
     sample(guitars.slice(1), 8).map((g) => ({ ...pictureData(g.imagePath), alt: g.name, href: '/music/guitars' })),
-    sample(kitchen, 8).map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/kitchen-wins' })),
+    sample(kitchen, 8).map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/recipes' })),
     sample(alison, 8).map((a) => ({ ...pictureData(a.imagePath), alt: `${a.title}, ${a.description}`, href: '/collections/alison' })),
   );
 
@@ -59,10 +59,6 @@ export default async function HomePage() {
           </Link>
         </div>
       </Hero>
-
-      <section className="section">
-        <p className="lead">{HOME.lead}</p>
-      </section>
 
       <section className="section" aria-labelledby="explore">
         <div className="section-head">

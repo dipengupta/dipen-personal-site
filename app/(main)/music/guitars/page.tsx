@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
+import GuitarTimeline from '@/components/main/GuitarTimeline';
 import PageHeader from '@/components/main/PageHeader';
-import PhotoGrid, { type PhotoItem } from '@/components/main/PhotoGrid';
-import { pictureData } from '@/components/main/Picture';
+import Picture from '@/components/main/Picture';
 import { MUSIC } from '@/content/music';
 import { getSection } from '@/lib/content/queries';
 
@@ -10,32 +10,18 @@ export const dynamic = 'force-dynamic';
 
 export default async function GuitarsPage() {
   const guitars = await getSection('guitars');
-  const items: PhotoItem[] = guitars.map((g) => ({
-    ...pictureData(g.imagePath),
-    id: `guitar-${g.id}`,
-    alt: g.name,
-    caption: g.name,
-    sub: g.year || undefined,
-  }));
+  const rack = guitars.find((g) => !g.year);
+  const dated = guitars.filter((g) => g.year).sort((a, b) => Number(b.year) - Number(a.year) || b.sortOrder - a.sortOrder);
   return (
     <>
       <PageHeader eyebrow="Music" title="Guitars" intro={MUSIC.guitars.blurb} />
-      <PhotoGrid items={items} size="lg" sizes="(min-width: 900px) 360px, 45vw" />
-      <section className="section">
-        <ul className="list-plain">
-          {guitars.map((g) => (
-            <li key={g.id} className="row" style={{ flexDirection: 'column', alignItems: 'stretch', gap: '0.2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
-                <span className="row-title">{g.name}</span>
-                {g.year && <span className="row-meta">{g.year}</span>}
-              </div>
-              <p className="muted" style={{ margin: 0 }}>
-                {g.description}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {rack && (
+        <figure className="gtl-hero">
+          <Picture src={rack.imagePath} alt={rack.name} priority sizes="(min-width: 1160px) 1120px, 100vw" />
+          <figcaption className="muted">{rack.description}</figcaption>
+        </figure>
+      )}
+      <GuitarTimeline guitars={dated} />
     </>
   );
 }

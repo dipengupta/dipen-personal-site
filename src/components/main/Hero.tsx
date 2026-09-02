@@ -12,8 +12,9 @@ export interface HeroImage extends PictureData {
  * One photo at a time, crossfading every `intervalMs`. Only the current and
  * the next image are mounted (the next one loads during the interval),
  * transitions are opacity-only, and the cycle pauses under
- * prefers-reduced-motion or while the tab is hidden. Portrait photos are
- * anchored high so faces survive the wide crop.
+ * prefers-reduced-motion or while the tab is hidden. Each photo is shown
+ * complete (object-fit: contain) over a blurred, enlarged copy of itself, so
+ * portraits look right on a wide desktop hero and landscapes on a phone.
  */
 export default function Hero({
   images,
@@ -62,21 +63,23 @@ export default function Hero({
     <div className={`hero ${compact ? 'hero-compact' : ''}`} data-testid="hero">
       <div className="hero-stage" aria-live="off">
         {shown.map((i) => (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            key={images[i].src}
-            src={images[i].src}
-            srcSet={images[i].srcSet}
-            sizes="100vw"
-            width={images[i].width}
-            height={images[i].height}
-            alt={images[i].alt}
-            loading={i === index ? 'eager' : 'lazy'}
-            decoding="async"
-            fetchPriority={i === index ? 'high' : 'low'}
-            className={`hero-img ${i === index ? 'is-current' : ''}`}
-            style={{ ...blurStyle(images[i].blur), objectPosition: images[i].height > images[i].width ? '50% 22%' : '50% 40%' }}
-          />
+          <div key={images[i].src} className={`hero-slide ${i === index ? 'is-current' : ''}`}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={images[i].src} sizes="100vw" width={images[i].width} height={images[i].height} alt="" aria-hidden="true" className="hero-bg" loading={i === index ? 'eager' : 'lazy'} decoding="async" style={blurStyle(images[i].blur)} />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={images[i].src}
+              srcSet={images[i].srcSet}
+              sizes="100vw"
+              width={images[i].width}
+              height={images[i].height}
+              alt={images[i].alt}
+              loading={i === index ? 'eager' : 'lazy'}
+              decoding="async"
+              fetchPriority={i === index ? 'high' : 'low'}
+              className="hero-img"
+            />
+          </div>
         ))}
       </div>
       <div className="hero-overlay" />

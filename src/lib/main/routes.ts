@@ -36,7 +36,6 @@ export const SECTIONS: SectionDef[] = [
       { href: '/collections/articles', label: 'Articles', blurb: 'Essays, saved in full.' },
       { href: '/collections/mugs-vinyls-and-magnets', label: 'Mugs, Vinyls and Magnets', blurb: 'The mug shelf, the record shelf and the fridge door.' },
       { href: '/collections/recipes', label: 'Recipes and Spice Blends', blurb: 'Food, baking, drinks, tips, and the blends to keep on hand.' },
-      { href: '/collections/kitchen-wins', label: 'Kitchen Wins', blurb: 'Things that came out well.' },
       { href: '/collections/alison', label: 'Alison', blurb: 'A photo collection, oldest to newest.' },
       { href: '/collections/pennguytweets', label: 'pennguytweets', blurb: 'The archive, numbered, newest first.' },
     ],
@@ -85,5 +84,6 @@ export const REDIRECTS: Array<{ source: string; destination: string }> = [
   { source: '/collections/mugs', destination: '/collections/mugs-vinyls-and-magnets' },
   { source: '/collections/vinyls-and-magnets', destination: '/collections/mugs-vinyls-and-magnets' },
   { source: '/collections/spice-blends', destination: '/collections/recipes' },
+  { source: '/collections/kitchen-wins', destination: '/collections/recipes' },
   { source: '/collections/spice-blends/:slug', destination: '/collections/recipes/:slug' },
 ];

@@ -25,9 +25,8 @@ export const HERO_PHOTOS = [
 
 export const HOME = {
   greeting: "Hi, I'm Dipen.",
-  intro: "I'm a software developer, musician and a Penn State graduate.",
-  lead:
-    'This site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.',
+  intro:
+    "I'm a software developer, musician and a Penn State graduate, and this site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.",
   exploreHeading: 'Explore',
   viewsHeading: 'Two other ways to browse this site',
   viewsIntro:

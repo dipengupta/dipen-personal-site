@@ -11,7 +11,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function RecipesPage() {
   const [recipes, blends, kitchen] = await Promise.all([recipesWithSlugs(), spiceBlendsWithSlugs(), getSection('kitchen')]);
-  const strip: MosaicImage[] = kitchen.map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/kitchen-wins' }));
+  const strip: MosaicImage[] = kitchen.map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '#food' }));
   const groups = [
     ...RECIPE_CATEGORIES.map((c) => ({
       id: c.key,
@@ -26,14 +26,14 @@ export default async function RecipesPage() {
   ];
   return (
     <>
-      <PageHeader eyebrow="Collections" title="Recipes and Spice Blends" intro="Things I cook often enough to have written down, and the blends to keep on hand." />
+      <PageHeader eyebrow="Collections" title="Recipes and Spice Blends" />
       <div style={{ marginBottom: '2rem' }}>
         <Mosaic images={strip} />
       </div>
       <nav className="pill-row" aria-label="Categories">
         {groups.map((g) => (
           <a key={g.id} className="pill" href={`#${g.id}`}>
-            {g.label} <span className="muted">{g.rows.length}</span>
+            {g.label}
           </a>
         ))}
       </nav>
@@ -41,7 +41,6 @@ export default async function RecipesPage() {
         <section key={g.id} id={g.id} aria-labelledby={`h-${g.id}`}>
           <div className="group-head">
             <h2 id={`h-${g.id}`}>{g.label}</h2>
-            <span className="muted">{g.rows.length}</span>
           </div>
           <ul className="compact-list">
             {g.rows.map((r) => (

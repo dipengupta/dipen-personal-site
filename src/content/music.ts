@@ -2,7 +2,7 @@
 export const MUSIC = {
   intro: "I've loved music for as long as I can remember. Here are the guitars I have collected over the years, and the places where I put the playing.",
   guitars: {
-    blurb: 'The collection, from the first acoustic in 2009 to the latest Les Paul.',
+    blurb: 'The collection, newest first, from the latest Les Paul back to the first acoustic in 2009.',
   },
   youtube: {
     heading: 'YouTube',
@@ -19,7 +19,8 @@ export const MUSIC = {
     cta: 'Follow on Instagram',
   },
   soundcloud: {
-    heading: 'SoundCloud: The Side Project',
+    heading: 'SoundCloud',
+    subtitle: 'The Side Project',
     blurb: 'This came from me and two seniors jamming back in 2012 to 2014.',
     profileUrl: 'https://soundcloud.com/dipen-gupta',
     tracksUrl: 'https://soundcloud.com/dipen-gupta/tracks',
