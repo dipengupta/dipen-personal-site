@@ -29,11 +29,13 @@ done
 echo "app: $APP  local: $LOCAL  remote: $REMOTE"
 remote_list="$(mktemp)"; local_list="$(mktemp)"; trap 'rm -f "$remote_list" "$local_list"' EXIT
 
-# "size path" lines, sorted by path, for both sides.
+# "size path" lines for both sides, sorted as whole lines: comm compares whole
+# lines, so sorting by the path field alone (sort -k2) makes it silently report
+# identical files as missing. LC_ALL=C keeps the ordering deterministic.
 fly ssh console -a "$APP" -C "sh -c 'mkdir -p $REMOTE && cd $REMOTE && find . -type f -printf \"%s %p\\n\"'" \
-  | tr -d '\r' | sort -k2 > "$remote_list" || true
+  | tr -d '\r' | LC_ALL=C sort > "$remote_list" || true
 (cd "$LOCAL" && find . -type f ! -name '.DS_Store' -exec stat -f '%z %N' {} + 2>/dev/null || (cd "$LOCAL" && find . -type f ! -name '.DS_Store' -printf '%s %p\n')) \
-  | sort -k2 > "$local_list"
+  | LC_ALL=C sort > "$local_list"
 
 # Files whose "size path" line is missing remotely: new or changed.
 todo="$(comm -23 "$local_list" "$remote_list" | cut -d' ' -f2-)"
