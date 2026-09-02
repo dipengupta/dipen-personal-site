@@ -1,10 +1,10 @@
 # node:*-bookworm-slim (glibc) so better-sqlite3 and sharp use prebuilt binaries.
-FROM node:22-bookworm-slim AS deps
+FROM node:26-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 
-FROM node:22-bookworm-slim AS build
+FROM node:26-bookworm-slim AS build
 WORKDIR /app
 # Footer "last updated" + commit: scripts/deploy.sh passes these from git,
 # since .git is not in the build context. Defaults keep plain `docker build` working.
@@ -18,7 +18,7 @@ RUN npm run build
 RUN npx esbuild scripts/seed.ts --bundle --platform=node --format=cjs \
     --outfile=dist/seed.js --external:better-sqlite3
 
-FROM node:22-bookworm-slim AS runner
+FROM node:26-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     DATABASE_PATH=/data/site.db \
