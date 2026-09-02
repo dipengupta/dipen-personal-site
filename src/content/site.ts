@@ -14,8 +14,9 @@ export const SITE_DESCRIPTION =
  * face stays in frame on a wide hero.
  */
 export const HERO_PHOTOS = [
-  '/media/images/home/main.webp',
   '/media/images/home/acoustic_profile.webp',
+  '/media/images/home/main.webp',
+  '/media/images/home/mountain-rails.webp',
   '/media/images/home/indianapolis-suit.webp',
   '/media/images/home/prof_guitar.webp',
   '/media/images/home/bucees.webp',

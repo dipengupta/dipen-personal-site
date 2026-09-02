@@ -1823,6 +1823,26 @@
       "takenAt": "2022-02-13T10:49:30.000Z",
       "blur": "data:image/webp;base64,UklGRmYAAABXRUJQVlA4IFoAAADQAQCdASoQAAsAA4BaJQAAVeZf/73wAAD5Tex2wXC/8t63usO4Sf0B8YGKZARhBadFM9wADwCZCbM7R5kCVcv9Ydw7nCFS3aw6v/TAQwRgCVgvc8CH+ybsgAA="
     },
+    "/media/images/home/mountain-rails.webp": {
+      "width": 600,
+      "height": 800,
+      "source": {
+        "width": 4284,
+        "height": 5712
+      },
+      "variants": {
+        "400": {
+          "width": 300,
+          "height": 400
+        },
+        "1600": {
+          "width": 1200,
+          "height": 1600
+        }
+      },
+      "takenAt": "2026-06-14T15:27:08.000Z",
+      "blur": "data:image/webp;base64,UklGRmAAAABXRUJQVlA4IFQAAADwAQCdASoMABAAA4BaJQBOgCB0G3io/AAA/u2NPx1MHhQ+v+XcO2qxLiGf2PqTdtpMd6wHt5cJMcR2TtHleny1hGCxExAsofdAM4nJkt6HkIb3QAA="
+    },
     "/media/images/home/new-orleans-mirror.webp": {
       "width": 600,
       "height": 800,

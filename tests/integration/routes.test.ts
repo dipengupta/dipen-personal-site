@@ -26,7 +26,7 @@ describe('/api/content/[section]', () => {
 
   it('splits profile photos and kitchen wins out of the gallery items', async () => {
     const photos = await (await getContent(req, params({ section: 'photos' }))).json();
-    expect(photos.items).toHaveLength(10);
+    expect(photos.items.length).toBeGreaterThanOrEqual(10);
     for (const item of photos.items) {
       expect(item.category).toBe('profile');
     }

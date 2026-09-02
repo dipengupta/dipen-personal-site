@@ -15,13 +15,13 @@ export default async function GuitarsPage() {
   return (
     <>
       <PageHeader eyebrow="Music" title="Guitars" intro={MUSIC.guitars.blurb} />
+      <GuitarTimeline guitars={dated} />
       {rack && (
-        <figure className="gtl-hero">
-          <Picture src={rack.imagePath} alt={rack.name} priority sizes="(min-width: 1160px) 1120px, 100vw" />
+        <figure className="gtl-hero gtl-closer">
+          <Picture src={rack.imagePath} alt={rack.name} sizes="(min-width: 1160px) 1120px, 100vw" />
           <figcaption className="muted">{rack.description}</figcaption>
         </figure>
       )}
-      <GuitarTimeline guitars={dated} />
     </>
   );
 }

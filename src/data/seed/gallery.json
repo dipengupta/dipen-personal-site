@@ -688,5 +688,11 @@
     "description": "December 2023",
     "imagePath": "/media/images/alison/alison-095.webp",
     "category": "alison"
+  },
+  {
+    "title": "Mountain rails",
+    "description": "Rail tracks, a lake and the mountains behind.",
+    "imagePath": "/media/images/home/mountain-rails.webp",
+    "category": "profile"
   }
 ]
