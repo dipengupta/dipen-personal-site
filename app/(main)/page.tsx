@@ -42,7 +42,12 @@ export default async function HomePage() {
   // Wide screens get the landscape photos, phones the portraits (CSS shows one hero per orientation).
   const landscape = heroImages.filter((i) => i.width >= i.height);
   const portrait = heroImages.filter((i) => i.width < i.height);
-  const heroContent = <h1>{HOME.greeting}</h1>;
+  const heroContent = (
+    <>
+      <h1>{HOME.greeting}</h1>
+      <p>{HOME.intro}</p>
+    </>
+  );
   const mosaic: MosaicImage[] = interleave(
     sample(guitars.slice(1), 8).map((g) => ({ ...pictureData(g.imagePath), alt: g.name, href: '/music/guitars' })),
     sample(kitchen, 8).map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/recipes' })),
@@ -57,10 +62,6 @@ export default async function HomePage() {
       <div className="hero-only-mobile">
         <Hero images={portrait.length ? portrait : heroImages}>{heroContent}</Hero>
       </div>
-
-      <section className="section" style={{ marginTop: '2rem' }}>
-        <p className="lead">{HOME.intro}</p>
-      </section>
 
       <section className="section" aria-labelledby="explore">
         <div className="section-head">
