@@ -34,7 +34,7 @@ export default async function InstagramPage({ searchParams }: { searchParams: Pr
           </Link>
         ))}
       </nav>
-      <div className="grid grid-3" data-testid="ugg-grid">
+      <div className="grid ugg-grid" data-testid="ugg-grid">
         {shown.map((e) => {
           const posterUrl = `/media/images/ugg/ugg-${e.episode}.webp`;
           return (

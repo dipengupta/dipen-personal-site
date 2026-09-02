@@ -25,14 +25,14 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
 ];
 
 test.describe('main site', () => {
-  test('home: hero, sections, other views, mosaic, contact', async ({ page }) => {
+  test('home: hero, explore index, other views, mosaic', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: /Hi, I'm Dipen/ })).toBeVisible();
     await expect(page.getByTestId('hero').locator('img.is-current')).toHaveCount(1);
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Say hi', level: 2 })).toBeVisible();
+    await expect(page.locator('.index-row')).toHaveCount(4);
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);
     await expect(page.getByTestId('view-card-itunes')).toHaveAttribute('href', /itunes/);
     await expect(page.getByTestId('mosaic').locator('img').first()).toBeAttached();
@@ -89,7 +89,7 @@ test.describe('main site', () => {
 
   test('search opens the exact item', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Search' }).click();
+    await page.getByRole('link', { name: 'Search', exact: true }).click();
     const box = page.getByRole('combobox', { name: 'Search' });
     await box.fill('Chicken Rice');
     const hit = page.getByRole('option', { name: /Chicken Rice/ }).first();
@@ -140,7 +140,7 @@ test.describe('main site on a phone', () => {
 
   test('the menu sheet opens and navigates', async ({ page }) => {
     await page.goto('/');
-    await page.getByRole('button', { name: 'Open menu' }).click();
+    await page.locator('summary.menu-toggle').click();
     await page.locator('#mobile-nav').getByRole('link', { name: /Recipes/ }).click();
     await expect(page).toHaveURL(/\/collections\/recipes$/);
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Recipes/);

@@ -28,8 +28,6 @@ export const HOME = {
   intro: "I'm a software developer, musician and a Penn State graduate.",
   lead:
     'This site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.',
-  about:
-    "A little more about me: I'm a software developer by trade, a guitarist since 2009, and a collector of small things (mugs, magnets, vinyls, recipes). I grew up in Mumbai, did my master's at Penn State Harrisburg, and now live and work in Pennsylvania. The Academic and Professional pages have the longer version.",
   exploreHeading: 'Explore',
   viewsHeading: 'Two other ways to browse this site',
   viewsIntro:
@@ -37,12 +35,10 @@ export const HOME = {
   ipodCard: {
     title: 'iPod',
     body: 'Spin the click wheel, flip through Cover Flow, and let the music keep playing while you browse. Works on phones too.',
-    cta: 'Open the iPod',
   },
   itunesCard: {
     title: 'iTunes',
     body: 'A source list, a grid, Cover Flow, a global search box and transport controls, the way it looked in 2007. Desktop only.',
-    cta: 'Open iTunes',
     mobileNote: 'iTunes needs a larger screen; on a phone it opens the iPod instead.',
   },
   mosaicHeading: 'A few pictures',

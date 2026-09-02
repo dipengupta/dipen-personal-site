@@ -1362,3 +1362,108 @@ a.card:hover {
 .desc summary.clamp-2 {
   color: var(--muted);
 }
+
+/* Header actions sit at the far right on every viewport; the nav floats between */
+.nav {
+  margin-left: auto;
+}
+.header-actions {
+  margin-left: auto;
+}
+@media (min-width: 900px) {
+  .nav + .header-actions {
+    margin-left: 0.5rem;
+  }
+}
+.menu-details summary {
+  list-style: none;
+}
+.menu-details summary::-webkit-details-marker {
+  display: none;
+}
+.menu-details .icon-close,
+.menu-details[open] .icon-open {
+  display: none;
+}
+.menu-details[open] .icon-close {
+  display: block;
+}
+@media (min-width: 900px) {
+  .menu-details {
+    display: none;
+  }
+}
+.mobile-nav .group > span {
+  display: block;
+  font-family: var(--font-serif);
+  font-size: 1.5rem;
+  color: var(--text);
+  margin-bottom: 0.4rem;
+}
+
+/* Explore index */
+.index {
+  border-top: 1px solid var(--line);
+}
+.index-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem 2rem;
+  padding: 1.25rem 0;
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 700px) {
+  .index-row {
+    grid-template-columns: 200px 1fr;
+  }
+}
+.index-label {
+  font-family: var(--font-serif);
+  font-size: 1.7rem;
+  color: var(--text) !important;
+  line-height: 1.1;
+}
+.index-pages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 210px), 1fr));
+  gap: 0.6rem 1.5rem;
+}
+.index-pages li a {
+  color: var(--text);
+  font-weight: 500;
+}
+.index-blurb {
+  display: block;
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+/* Grid sizing per section */
+.photo-grid.photo-grid-lg {
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+}
+@media (min-width: 900px) {
+  .photo-grid.photo-grid-lg {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+  }
+}
+@media (min-width: 900px) {
+  .ugg-grid {
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 0.9rem;
+  }
+  .ugg-grid .card-body {
+    padding: 0.7rem 0.8rem 0.9rem;
+  }
+  .ugg-grid .card-body h3 {
+    font-size: 0.92rem;
+  }
+  .ugg-grid .card-body p,
+  .ugg-grid .desc {
+    font-size: 0.82rem;
+  }
+}

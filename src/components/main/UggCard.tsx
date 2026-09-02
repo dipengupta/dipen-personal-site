@@ -35,7 +35,7 @@ export default function UggCard({ episode, name, date, duration, caption, videoS
           <button type="button" className="yt-thumb" onClick={() => setPlaying(true)} aria-label={`Play episode ${episode}: ${name}`}>
             {poster ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={poster.src} srcSet={poster.srcSet} sizes="(min-width: 900px) 360px, 100vw" width={poster.width} height={poster.height} alt="" loading="lazy" decoding="async" style={blurStyle(poster.blur)} />
+              <img src={poster.src} srcSet={poster.srcSet} sizes="(min-width: 900px) 200px, 100vw" width={poster.width} height={poster.height} alt="" loading="lazy" decoding="async" style={blurStyle(poster.blur)} />
             ) : (
               <span className="poster-empty">Ep. {episode}</span>
             )}

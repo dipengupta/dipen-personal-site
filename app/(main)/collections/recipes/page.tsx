@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import Hero, { type HeroImage } from '@/components/main/Hero';
+import Mosaic, { type MosaicImage } from '@/components/main/Mosaic';
+import PageHeader from '@/components/main/PageHeader';
 import { pictureData } from '@/components/main/Picture';
 import { getSection } from '@/lib/content/queries';
 import { RECIPE_CATEGORIES, recipesWithSlugs, spiceBlendsWithSlugs } from '@/lib/main/recipes';
@@ -10,29 +11,26 @@ export const dynamic = 'force-dynamic';
 
 export default async function RecipesPage() {
   const [recipes, blends, kitchen] = await Promise.all([recipesWithSlugs(), spiceBlendsWithSlugs(), getSection('kitchen')]);
-  const heroImages: HeroImage[] = kitchen.map((k) => ({ ...pictureData(k.imagePath), alt: k.title }));
+  const strip: MosaicImage[] = kitchen.map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/kitchen-wins' }));
   const groups = [
     ...RECIPE_CATEGORIES.map((c) => ({
       id: c.key,
       label: c.label,
-      rows: recipes.filter((r) => r.category === c.key).map((r) => ({ id: `recipe-${r.id}`, title: r.title, href: `/collections/recipes/${r.slug}`, source: r.sourceUrl ? new URL(r.sourceUrl).hostname.replace(/^www\./, '') : null })),
+      rows: recipes.filter((r) => r.category === c.key).map((r) => ({ id: `recipe-${r.id}`, title: r.title, href: `/collections/recipes/${r.slug}` })),
     })),
     {
       id: 'spice-blends',
       label: 'Spice Blends',
-      rows: blends.map((b) => ({ id: `spice-${b.id}`, title: b.title, href: `/collections/recipes/${b.slug}`, source: b.sourceUrl ? new URL(b.sourceUrl).hostname.replace(/^www\./, '') : null })),
+      rows: blends.map((b) => ({ id: `spice-${b.id}`, title: b.title, href: `/collections/recipes/${b.slug}` })),
     },
   ];
   return (
     <>
-      <Hero images={heroImages} compact>
-        <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.8)' }}>
-          Collections
-        </p>
-        <h1>Recipes and Spice Blends</h1>
-        <p>Things I cook often enough to have written down, and the blends to keep on hand.</p>
-      </Hero>
-      <nav className="pill-row" aria-label="Categories" style={{ marginTop: '1.5rem' }}>
+      <PageHeader eyebrow="Collections" title="Recipes and Spice Blends" intro="Things I cook often enough to have written down, and the blends to keep on hand." />
+      <div style={{ marginBottom: '2rem' }}>
+        <Mosaic images={strip} />
+      </div>
+      <nav className="pill-row" aria-label="Categories">
         {groups.map((g) => (
           <a key={g.id} className="pill" href={`#${g.id}`}>
             {g.label} <span className="muted">{g.rows.length}</span>
@@ -49,7 +47,6 @@ export default async function RecipesPage() {
             {g.rows.map((r) => (
               <li key={r.id} id={r.id}>
                 <Link href={r.href}>{r.title}</Link>
-                {r.source && <span className="muted">via {r.source}</span>}
               </li>
             ))}
           </ul>

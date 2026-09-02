@@ -2,9 +2,8 @@ import Link from 'next/link';
 import Hero, { type HeroImage } from '@/components/main/Hero';
 import Mosaic, { type MosaicImage } from '@/components/main/Mosaic';
 import { pictureData } from '@/components/main/Picture';
-import SocialIcon from '@/components/main/SocialIcon';
 import ViewCards from '@/components/main/ViewCards';
-import { CONTACT, HERO_PHOTOS, HOME, SOCIALS } from '@/content/site';
+import { HERO_PHOTOS, HOME } from '@/content/site';
 import { getSection } from '@/lib/content/queries';
 import { SECTIONS, sectionHref } from '@/lib/main/routes';
 import { siteConfigFromRequest } from '@/lib/site/request';
@@ -63,26 +62,26 @@ export default async function HomePage() {
 
       <section className="section">
         <p className="lead">{HOME.lead}</p>
-        <p className="lead">{HOME.about}</p>
       </section>
 
       <section className="section" aria-labelledby="explore">
         <div className="section-head">
           <h2 id="explore">{HOME.exploreHeading}</h2>
         </div>
-        <div className="grid grid-3">
+        <div className="index">
           {SECTIONS.map((s) => (
-            <div key={s.id} className="card">
-              <div className="card-body">
-                <h3>{s.label}</h3>
-                <ul className="card-links">
-                  {s.pages.map((p) => (
-                    <li key={p.href}>
-                      <Link href={p.href}>{p.label}</Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+            <div key={s.id} className="index-row">
+              <Link href={sectionHref(s)} className="index-label">
+                {s.label}
+              </Link>
+              <ul className="index-pages">
+                {s.pages.map((p) => (
+                  <li key={p.href}>
+                    <Link href={p.href}>{p.label}</Link>
+                    <span className="index-blurb">{p.blurb}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
           ))}
         </div>
@@ -101,32 +100,6 @@ export default async function HomePage() {
           <h2 id="pictures">{HOME.mosaicHeading}</h2>
         </div>
         <Mosaic images={mosaic} />
-      </section>
-
-      <section className="section" aria-labelledby="contact" id="contact">
-        <div className="section-head">
-          <h2 id="contact-heading">{CONTACT.heading}</h2>
-        </div>
-        <p className="lead">
-          {CONTACT.body}{' '}
-          {CONTACT.emails.map((e, i) => (
-            <span key={e}>
-              <a href={`mailto:${e}`}>{e}</a>
-              {i < CONTACT.emails.length - 1 ? ' or ' : '.'}
-            </span>
-          ))}
-        </p>
-        <div className="socials">
-          {SOCIALS.map((s) => (
-            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer">
-              <SocialIcon id={s.id} />
-              {s.label}
-            </a>
-          ))}
-        </div>
-        <p className="muted" style={{ marginTop: '1rem' }}>
-          <Link href={sectionHref(SECTIONS[2])}>Academic</Link> and <Link href="/about/professional">Professional</Link> have the longer story.
-        </p>
       </section>
     </>
   );

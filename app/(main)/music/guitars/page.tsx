@@ -20,7 +20,7 @@ export default async function GuitarsPage() {
   return (
     <>
       <PageHeader eyebrow="Music" title="Guitars" intro={MUSIC.guitars.blurb} />
-      <PhotoGrid items={items} sizes="(min-width: 900px) 280px, 45vw" />
+      <PhotoGrid items={items} size="lg" sizes="(min-width: 900px) 360px, 45vw" />
       <section className="section">
         <ul className="list-plain">
           {guitars.map((g) => (

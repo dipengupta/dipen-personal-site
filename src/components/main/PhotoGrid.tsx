@@ -16,7 +16,7 @@ export interface PhotoItem extends PictureData {
  * variant in a <dialog>; arrows move between photos, Escape closes. Tiles
  * carry `id`s so search deep links can land on a specific photo.
  */
-export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw' }: { items: PhotoItem[]; sizes?: string }) {
+export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md' }: { items: PhotoItem[]; sizes?: string; size?: 'md' | 'lg' }) {
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -45,7 +45,7 @@ export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45
   const current = open !== null ? items[open] : null;
   return (
     <>
-      <div className="photo-grid" data-testid="photo-grid">
+      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : ''}`} data-testid="photo-grid">
         {items.map((item, i) => (
           <figure key={item.id} id={item.id} className="photo-tile" style={{ margin: 0 }}>
             <button type="button" onClick={() => setOpen(i)} aria-label={`Open ${item.caption ?? item.alt}`} style={{ all: 'unset', display: 'block', width: '100%', height: '100%', cursor: 'zoom-in' }}>

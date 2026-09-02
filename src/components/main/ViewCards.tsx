@@ -15,7 +15,6 @@ export default function ViewCards({ siteConfig }: { siteConfig: SiteConfig }) {
         <span className="view-text">
           <strong>{HOME.ipodCard.title}</strong>
           <span>{HOME.ipodCard.body}</span>
-          <span className="btn btn-sm">{HOME.ipodCard.cta}</span>
         </span>
       </a>
       <a className="view-card" href={viewHref('itunes', siteConfig)} data-testid="view-card-itunes">
@@ -34,7 +33,6 @@ export default function ViewCards({ siteConfig }: { siteConfig: SiteConfig }) {
           <span className="only-mobile muted" style={{ fontSize: '0.85rem' }}>
             {HOME.itunesCard.mobileNote}
           </span>
-          <span className="btn btn-sm">{HOME.itunesCard.cta}</span>
         </span>
       </a>
     </div>

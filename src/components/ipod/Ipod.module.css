@@ -31,29 +31,44 @@
 }
 
 .links {
+  position: fixed;
+  top: 18px;
+  right: 22px;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 12px;
-  letter-spacing: 0.02em;
+  gap: 8px;
+  font-size: 13px;
+  letter-spacing: 0.01em;
 }
 
 .viewLink {
-  color: var(--hint-color);
+  color: #2b2d33;
   text-decoration: none;
-  opacity: 0.8;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+  padding: 7px 14px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme='black'] .viewLink {
+  color: #e8e8ea;
+  background: rgba(30, 30, 34, 0.7);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 .linkSep {
-  width: 3px;
-  height: 3px;
-  border-radius: 50%;
-  background: var(--hint-color);
-  opacity: 0.6;
+  display: none;
 }
 
 .viewLink:hover {
-  opacity: 1;
+  background: #fff;
+  border-color: rgba(0, 0, 0, 0.35);
+}
+
+[data-theme='black'] .viewLink:hover {
+  background: rgba(50, 50, 56, 0.9);
 }
 
 /* Mobile: device is the page */
@@ -68,9 +83,20 @@
     --device-w: min(100vw - 16px, calc((100dvh - 30px) * 0.62));
   }
 
-  /* iTunes would only bounce a portrait phone back; keep the way home. */
-  .itunesLink,
-  .linkSep {
+  /* iTunes would only bounce a portrait phone back; keep the way home, small,
+     in the bottom safe area. */
+  .itunesLink {
     display: none;
+  }
+  .links {
+    top: auto;
+    right: auto;
+    bottom: max(8px, env(safe-area-inset-bottom));
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+  }
+  .viewLink {
+    padding: 5px 11px;
   }
 }
