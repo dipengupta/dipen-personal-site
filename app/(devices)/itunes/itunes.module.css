@@ -1,0 +1,87 @@
+/*
+ * Page wrapper for the desktop iTunes view. Defines the iTunes design tokens
+ * (gradient values copied from the iPod view CSS — not imported, to keep the
+ * two layers independent) and the silver/black chrome tints. Tokens cascade by
+ * DOM inheritance, so every descendant iTunes component can read var(--it-*).
+ * The screen interior stays the classic light iTunes look in both themes;
+ * only the chrome tokens change under [data-theme='black'].
+ */
+
+.page {
+  /* Signature gradients */
+  --it-aqua: linear-gradient(180deg, #7db9f5 0%, #4a90e8 49%, #1f64d2 50%, #2e7ae0 100%);
+  --it-aqua-soft: linear-gradient(180deg, #7db9f5 0%, #2e7ae0 100%);
+  --it-chrome: linear-gradient(180deg, #fdfdfd 0%, #e8e9eb 50%, #d6d7da 51%, #c9cacd 100%);
+  --it-progress: linear-gradient(180deg, #6fb1f5, #2f6fc4);
+  /* iTunes' status display — pale blue-aluminum, not green. */
+  --it-lcd: linear-gradient(180deg, #eaeff5 0%, #cdd7e3 100%);
+  --it-lcd-text: #41506a;
+  --it-lcd-border: #9aa6b8;
+
+  /* Chrome surfaces (tinted by theme) */
+  --it-titlebar: linear-gradient(180deg, #e9eaec 0%, #c9cacd 100%);
+  --it-sidebar-bg: #dde4ec;
+  --it-sidebar-text: #2d2e33;
+  --it-sidebar-heading: #6b7686;
+  --it-window-border: #7a7c82;
+  --it-hairline: #b9bbc0;
+  --it-blue-link: #1f64d2;
+
+  /* Interior (theme-invariant light) */
+  --it-pane-bg: #ffffff;
+  --it-pane-alt: #f4f6f9;
+  --it-pane-text: #1f2024;
+  --it-pane-muted: #6a7686;
+
+  min-height: 100dvh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 4vh 16px;
+  box-sizing: border-box;
+  /* Firefox: Aqua-blue scrollbars, inherited by every scroll area below. */
+  scrollbar-width: thin;
+  scrollbar-color: #6aa6f0 #eef2f7;
+}
+
+/* WebKit/Chromium: Apple-Aqua scrollbars inside the iTunes window. */
+.page ::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.page ::-webkit-scrollbar-track {
+  background: #e7ecf2;
+}
+
+.page ::-webkit-scrollbar-thumb {
+  border-radius: 7px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  background-color: #6aa6f0;
+  background-image: linear-gradient(180deg, #a6d2fb, #5b9bf0);
+}
+
+.page ::-webkit-scrollbar-thumb:hover {
+  background-image: linear-gradient(180deg, #b6dcfd, #6aa6f0);
+}
+
+/* Black skin: tint only the window chrome, never the interior. */
+:global([data-theme='black']) .page {
+  --it-titlebar: linear-gradient(180deg, #3d3f44 0%, #1f2024 100%);
+  --it-sidebar-bg: #2b2d31;
+  --it-sidebar-text: #dfe1e6;
+  --it-sidebar-heading: #8e9aab;
+  --it-window-border: #0c0d0f;
+  --it-hairline: #3a3c40;
+}
+
+/* Portrait phones / narrow windows are redirected to the iPod; hide the window
+   as a belt-and-suspenders fallback before the redirect runs. Landscape phones
+   stay on iTunes (the tilt feature), so this must not hide them. */
+@media (max-width: 767px) and (orientation: portrait),
+  (pointer: coarse) and (orientation: portrait) {
+  .page {
+    display: none;
+  }
+}

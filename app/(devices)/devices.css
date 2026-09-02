@@ -1,0 +1,67 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  overscroll-behavior: none;
+}
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  background: var(--backdrop);
+}
+
+/* ---- Screen font: switched by [data-font], applied to the iPod screen only
+   (see Screen.module.css .logical). The surrounding page keeps its own font. */
+:root,
+[data-font='system'] {
+  --screen-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+}
+[data-font='authentic'] {
+  --screen-font: var(--font-authentic), 'Helvetica Neue', Arial, sans-serif;
+}
+[data-font='fun'] {
+  --screen-font: var(--font-fun), 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ---- Device themes: silver (default) and black iPod Classic ---- */
+
+:root,
+[data-theme='silver'] {
+  --backdrop: radial-gradient(ellipse at 50% 35%, #f4f4f6 0%, #d9dadd 70%, #c2c3c7 100%);
+
+  --shell-face: linear-gradient(160deg, #e9eaec 0%, #d4d5d9 45%, #c8c9cd 55%, #dddee1 100%);
+  --shell-edge: #9a9ba0;
+  --shell-shadow: rgba(40, 42, 48, 0.45);
+
+  --screen-bezel: #0d1b2a;
+
+  --wheel-bg: radial-gradient(circle at 35% 30%, #ffffff 0%, #f2f2f4 55%, #e2e3e6 100%);
+  --wheel-edge: rgba(0, 0, 0, 0.18);
+  --wheel-label: #9b9da3;
+  --center-bg: radial-gradient(circle at 40% 35%, #f5f5f7 0%, #d9dadd 70%, #cbccd0 100%);
+  --center-edge: rgba(0, 0, 0, 0.22);
+
+  --hint-color: #6b6d73;
+}
+
+/* The page backdrop (and the hint text on it) is theme-invariant: switching
+   themes recolors the device only. */
+[data-theme='black'] {
+  --shell-face: linear-gradient(160deg, #3d3e43 0%, #2a2b2f 45%, #232428 55%, #34353a 100%);
+  --shell-edge: #0c0d0f;
+  --shell-shadow: rgba(0, 0, 0, 0.75);
+
+  --screen-bezel: #08090c;
+
+  --wheel-bg: radial-gradient(circle at 35% 30%, #3a3b40 0%, #28292d 55%, #1d1e22 100%);
+  --wheel-edge: rgba(255, 255, 255, 0.08);
+  --wheel-label: #8e9096;
+  --center-bg: radial-gradient(circle at 40% 35%, #38393e 0%, #232428 70%, #1a1b1f 100%);
+  --center-edge: rgba(255, 255, 255, 0.1);
+}

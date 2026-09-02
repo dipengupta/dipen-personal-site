@@ -1,0 +1,75 @@
+/**
+ * Authored copy for the main site. Plain strings only: no em-dashes, no
+ * emoji (tests/unit/mainCopy.test.ts enforces both). Quoted content (articles,
+ * captions, tweets) comes from the database and is rendered as written.
+ */
+export const SITE_NAME = 'Dipen Gupta';
+export const SITE_TAGLINE = 'Software developer, musician, Penn State graduate.';
+export const SITE_DESCRIPTION =
+  "Dipen Gupta's personal website: guitars, videos, recipes, articles, collections, and a few other ways to browse it all.";
+
+export const HOME = {
+  greeting: "Hi, I'm Dipen.",
+  intro: "I'm a software developer, musician and a Penn State graduate.",
+  lead:
+    'This site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.',
+  exploreHeading: 'Explore',
+  viewsHeading: 'Two other ways to browse this site',
+  viewsIntro:
+    'Everything here is also available as a working iPod Classic and as an old-school iTunes window. Same content, same database, a very different feel.',
+  ipodCard: {
+    title: 'The iPod',
+    body: 'Spin the click wheel, flip through Cover Flow, and let the music keep playing while you browse. Works on phones too.',
+    cta: 'Open the iPod',
+  },
+  itunesCard: {
+    title: 'iTunes',
+    body: 'A source list, a grid, Cover Flow, a global search box and transport controls, the way it looked in 2007. Desktop only.',
+    cta: 'Open iTunes',
+    mobileNote: 'iTunes needs a larger screen; on a phone it opens the iPod instead.',
+  },
+  latestHeading: 'Latest',
+  mosaicHeading: 'A few pictures',
+} as const;
+
+export const CONTACT = {
+  heading: 'Say hi',
+  body: 'The quickest way to reach me is email.',
+  emails: ['dipenrgupta@gmail.com', 'dipenrgupta@icloud.com'],
+} as const;
+
+export interface SocialLink {
+  id: string;
+  label: string;
+  url: string;
+}
+
+export const SOCIALS: SocialLink[] = [
+  { id: 'youtube', label: 'YouTube', url: 'https://www.youtube.com/@DipenGupta' },
+  { id: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/dipengupta/' },
+  { id: 'soundcloud', label: 'SoundCloud', url: 'https://soundcloud.com/dipen-gupta' },
+  { id: 'substack', label: 'Substack', url: 'https://dipengupta.substack.com' },
+  { id: 'medium', label: 'Medium', url: 'https://medium.com/@escapesequencemovies' },
+  { id: 'github', label: 'GitHub', url: 'https://github.com/dipengupta' },
+  { id: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/in/dipen-gupta-ab6b5071/' },
+  { id: 'x', label: 'X', url: 'https://x.com/20swithepennguy' },
+  { id: 'threads', label: 'Threads', url: 'https://www.threads.net/@dipengupta' },
+];
+
+export const FOOTER = {
+  madeBy: 'Made from scratch by Dipen',
+  lastUpdatedPrefix: 'last updated',
+} as const;
+
+export const ABOUT = {
+  heading: 'About',
+  intro:
+    "I'm Dipen: a software developer by trade, a guitarist since 2009, and a collector of small things (mugs, magnets, vinyls, recipes). I grew up in Mumbai, did my master's at Penn State Harrisburg, and now live and work in Pennsylvania.",
+  academicBlurb: 'Projects I have built and the schools that got me here.',
+  professionalBlurb: 'Where I have worked and what I did there.',
+  projectsHeading: 'Projects',
+  projectsIntro: 'Here are some of my past projects.',
+  educationHeading: 'Education',
+  educationIntro: 'Here is my educational journey.',
+  professionalIntro: "Here you'll find the places I have worked at, and the roles I played in them.",
+} as const;

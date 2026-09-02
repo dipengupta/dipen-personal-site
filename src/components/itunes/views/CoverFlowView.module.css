@@ -1,0 +1,185 @@
+.stage {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #2c2d31 0%, #0d0d0f 60%, #000 100%);
+  overflow: hidden;
+  outline: none;
+}
+
+.flow {
+  flex: 1;
+  position: relative;
+  perspective: 1100px;
+  perspective-origin: 50% 50%;
+}
+
+/* Vertically centered so enlarging a cover grows it in place (no drift). */
+.coverSlot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-style: preserve-3d;
+  cursor: pointer;
+  transition:
+    transform 400ms cubic-bezier(0.22, 0.9, 0.24, 1),
+    opacity 400ms ease,
+    z-index 0s;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.coverImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.coverPlaceholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(160deg, #4a5568 0%, #2d3340 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: #e8eaee;
+  padding: 10px;
+  text-align: center;
+}
+
+.placeholderGlyph {
+  font-size: 48px;
+  line-height: 1;
+}
+
+.placeholderLabel {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.dim {
+  position: absolute;
+  inset: 0;
+  background: #000;
+  pointer-events: none;
+  transition: opacity 400ms ease;
+}
+
+.reflection {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: scaleY(-1);
+  opacity: 0.3;
+  -webkit-mask-image: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.8) 100%);
+  mask-image: linear-gradient(180deg, transparent 35%, rgba(0, 0, 0, 0.8) 100%);
+  pointer-events: none;
+}
+
+/* Horizontal scrubber to slide through the covers. */
+.scroll {
+  flex: 0 0 auto;
+  width: min(70%, 560px);
+  align-self: center;
+  margin: 6px 0 2px;
+  height: 12px;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+}
+
+.scroll::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(0, 0, 0, 0.3);
+}
+
+.scroll::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -4px;
+  width: 38px;
+  height: 13px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #7db9f5, #2e7ae0);
+  border: 1px solid #1f64d2;
+}
+
+.scroll::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.scroll::-moz-range-thumb {
+  width: 38px;
+  height: 13px;
+  border-radius: 7px;
+  background: linear-gradient(180deg, #7db9f5, #2e7ae0);
+  border: 1px solid #1f64d2;
+}
+
+/* The caption fills the space below the covers (title + description + index). */
+.caption {
+  /* Fixed height so the scrubber above never shifts as descriptions vary. */
+  flex: 0 0 34%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 28px 16px;
+  color: #fff;
+  overflow: hidden;
+}
+
+.captionTitle {
+  font-size: 17px;
+  font-weight: 700;
+  text-align: center;
+  max-width: 80%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.captionDesc {
+  margin: 0;
+  flex: 1 1 auto;
+  min-height: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #c7cad0;
+  text-align: center;
+  max-width: 620px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+}
+
+.captionIndex {
+  flex: 0 0 auto;
+  font-size: 11px;
+  color: #9b9da3;
+}
+
+.empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 13px;
+  background: #0d0d0f;
+}

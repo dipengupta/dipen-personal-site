@@ -1,0 +1,16 @@
+services:
+  site:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - site-data:/data
+      # Media stays outside the image and the repo; mount the local working copy.
+      - ./media:/data/media:ro
+    env_file:
+      - path: .env
+        required: false
+    restart: unless-stopped
+
+volumes:
+  site-data:

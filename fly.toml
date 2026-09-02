@@ -1,0 +1,38 @@
+# Fly.io config: one machine running the Dockerfile as-is. SQLite and media
+# live on the volume, so never scale this app past one machine.
+# Deploy with scripts/deploy.sh (passes the footer date + commit as build args).
+
+app = "dipen-personal-site"
+primary_region = "iad"
+
+[build]
+  # BUILD_DATE / GIT_SHA are supplied by scripts/deploy.sh --build-arg.
+
+[env]
+  MEDIA_DIR = "/data/media"
+  DATABASE_PATH = "/data/site.db"
+  # Set once the domain exists (or `fly secrets set SITE_DOMAIN=...`):
+  # SITE_DOMAIN = "dipengupta.com"
+
+[[mounts]]
+  source = "site_data"
+  destination = "/data"
+  initial_size = "10gb"
+
+[http_service]
+  internal_port = 3000
+  force_https = true
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    interval = "30s"
+    timeout = "5s"
+    grace_period = "20s"
+    method = "GET"
+    path = "/api/content/links"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"

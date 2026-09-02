@@ -1,0 +1,7 @@
+{
+  "//": "Runtime config for `tsx` scripts. The main tsconfig maps `sharp` to its .d.ts so `tsc` can type it under moduleResolution=bundler; tsx would follow that mapping at runtime and load the .d.ts, so scripts run with this file, which only keeps the @/ alias.",
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "paths": { "@/*": ["./src/*"] }
+  }
+}
