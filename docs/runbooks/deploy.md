@@ -31,28 +31,60 @@ scripts/media/push-fly.sh                                # images + videos onto 
 
 ## Domain and certificates
 
-DNS (all DNS-only, no proxy, so Fly can issue certificates):
+Done once, on 2026-09-02, for `dipengupta.com` (registered at Porkbun). The
+records below are what is live; repeat the shape for any new hostname.
 
-| Record | Name | Value |
+Get the addresses with `fly ips list -a dipen-personal-site`. The IPv4 is a
+*shared* Fly address (free): Fly routes it by hostname, which is why the
+certificates are what actually make the domain work.
+
+In the Porkbun DNS editor, first delete the parking records the registrar
+creates (an `ALIAS` on the root and a `CNAME` for `www`), then add:
+
+| Type | Host | Answer |
 | --- | --- | --- |
-| A / AAAA | `@` | IPs from `fly ips list` |
+| A | *(blank = apex)* | `66.241.124.51` (shared IPv4) |
+| AAAA | *(blank = apex)* | `2a09:8280:1::181:e31d:0` (dedicated IPv6) |
 | CNAME | `www` | `dipen-personal-site.fly.dev` |
 | CNAME | `ipod` | `dipen-personal-site.fly.dev` |
 | CNAME | `itunes` | `dipen-personal-site.fly.dev` |
 
+DNS-only, never proxied through a CDN, or Fly cannot validate the domain.
+
 ```bash
-fly certs add dipengupta.com
-fly certs add www.dipengupta.com
-fly certs add ipod.dipengupta.com
-fly certs add itunes.dipengupta.com
-fly certs check dipengupta.com
+fly certs add dipengupta.com        -a dipen-personal-site
+fly certs add www.dipengupta.com    -a dipen-personal-site
+fly certs add ipod.dipengupta.com   -a dipen-personal-site
+fly certs add itunes.dipengupta.com -a dipen-personal-site
+fly certs list -a dipen-personal-site
 ```
 
-(Or one wildcard: `fly certs add "*.dipengupta.com"` plus the apex; it needs
-the `_acme-challenge` CNAME Fly prints.) With `SITE_DOMAIN` set the app
-serves the device views on their subdomains, redirects `www.`, and sends the
-apex `/ipod` and `/itunes` paths to the subdomains. Without it (fly.dev) the
-paths just work.
+Then switch on subdomain routing (this restarts the machine, so never run it
+while `scripts/media/push-fly.sh` is streaming files):
+
+```bash
+fly secrets set SITE_DOMAIN=dipengupta.com -a dipen-personal-site
+```
+
+With `SITE_DOMAIN` set the app serves the device views on their subdomains,
+redirects `www.`, sends the apex `/ipod` and `/itunes` paths to the
+subdomains, and gives `sitemap.xml` / `robots.txt` real URLs. Without it
+(fly.dev, CI) the path prefixes serve the views directly.
+
+**Expect a gap between "Issued" and working TLS.** `fly certs list` reported
+`Issued` immediately while `fly certs show` still said `Not verified`, and
+the TLS handshake failed with `SSL_ERROR_SYSCALL` for about three minutes
+after the records went live. Port 80 answering with a 301 to HTTPS is the
+sign that Fly's edge already knows the hostname and only verification is
+outstanding. Poll rather than re-issue:
+
+```bash
+until [ "$(curl -s -o /dev/null -w '%{http_code}' https://dipengupta.com/)" = 200 ]; do sleep 30; done
+```
+
+A wildcard is possible instead (`fly certs add "*.dipengupta.com"` plus the
+apex) but needs the `_acme-challenge` CNAME Fly prints; per-hostname
+certificates are simpler while the list is short.
 
 ## Cutover from the old sites
 

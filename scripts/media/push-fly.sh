@@ -46,6 +46,8 @@ printf '%s\n' "$todo" | head -20
 [[ "$count" -gt 20 ]] && echo "  ..."
 [[ "$DRY" -eq 1 ]] && { echo "[dry-run] nothing sent"; exit 0; }
 
-printf '%s\n' "$todo" | (cd "$LOCAL" && tar -cf - -T -) \
+# COPYFILE_DISABLE: macOS tar otherwise stores extended attributes as
+# AppleDouble "._name" sidecar files, which land on the volume as junk.
+printf '%s\n' "$todo" | (cd "$LOCAL" && COPYFILE_DISABLE=1 tar -cf - -T -) \
   | fly ssh console -a "$APP" -C "sh -c 'cd $REMOTE && tar -xf -'"
 echo "done: pushed $count file(s)"

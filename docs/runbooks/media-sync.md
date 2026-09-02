@@ -11,6 +11,13 @@ is the production copy; your machine holds the working copy (`./media`, or
 | Check references vs manifest vs files | `npm run media:check` |
 | Free space on the volume | `fly volumes list`, then extend with `fly volumes extend` |
 
+`push-fly.sh` sets `COPYFILE_DISABLE=1` before `tar`: without it macOS
+stores extended attributes as AppleDouble `._name` sidecar files, which land
+on the volume as junk (993 of them, 3.9 MB, on the first push; they are
+unreachable over HTTP because the media route rejects names starting with a
+dot). Clean any up with
+`fly ssh console -a dipen-personal-site -C "sh -c 'find /data/media -name \"._*\" -delete'"`.
+
 `push-fly.sh` diffs by path and size and streams one tar over `fly ssh
 console`; the machine must be running (`fly machine start` if it is stopped).
 If ssh streaming misbehaves, `fly ssh sftp shell` and `put` the files by hand.
