@@ -19,7 +19,7 @@ export default async function GuitarsPage() {
   }));
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Music', href: '/music' }} title="Guitars" intro={MUSIC.guitars.blurb} />
+      <PageHeader eyebrow="Music" title="Guitars" intro={MUSIC.guitars.blurb} />
       <PhotoGrid items={items} sizes="(min-width: 900px) 280px, 45vw" />
       <section className="section">
         <ul className="list-plain">

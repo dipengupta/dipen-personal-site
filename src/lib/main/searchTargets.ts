@@ -14,7 +14,7 @@ export function searchResultHref(type: string, id: string, title: string): strin
     case 'recipes':
       return `/collections/recipes/${slugify(title)}`;
     case 'spiceBlends':
-      return `/collections/spice-blends/${slugify(title)}`;
+      return `/collections/recipes/${slugify(title)}`;
     case 'videos':
       return id.startsWith('ugg-') ? `/music/instagram#${id}` : `/music/youtube#${id}`;
     case 'guitars':
@@ -24,7 +24,7 @@ export function searchResultHref(type: string, id: string, title: string): strin
       if (id.startsWith('alison-')) return `/collections/alison#${id}`;
       return `/#${id}`;
     case 'mugs':
-      return `/collections/mugs#${id}`;
+      return `/collections/mugs-vinyls-and-magnets#${id}`;
     case 'timeline':
       return `/about/professional#${id}`;
     case 'academic':
@@ -39,8 +39,8 @@ export function searchResultHref(type: string, id: string, title: string): strin
       return `/misc/list#${id}`;
     case 'pages':
       if (id === 'octavium') return '/music/octavium';
-      if (id === 'vinyls' || id === 'magnets') return `/collections/vinyls-and-magnets#${id}`;
-      return '/about';
+      if (id === 'vinyls' || id === 'magnets') return `/collections/mugs-vinyls-and-magnets#${id}`;
+      return '/#contact';
     default:
       return '/search';
   }

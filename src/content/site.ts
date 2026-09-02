@@ -8,17 +8,34 @@ export const SITE_TAGLINE = 'Software developer, musician, Penn State graduate.'
 export const SITE_DESCRIPTION =
   "Dipen Gupta's personal website: guitars, videos, recipes, articles, collections, and a few other ways to browse it all.";
 
+/**
+ * Hero photos, in order: the profile shots where the face is the subject
+ * (paths under /media/images/home). Portrait photos are cropped high so the
+ * face stays in frame on a wide hero.
+ */
+export const HERO_PHOTOS = [
+  '/media/images/home/main.webp',
+  '/media/images/home/acoustic_profile.webp',
+  '/media/images/home/indianapolis-suit.webp',
+  '/media/images/home/prof_guitar.webp',
+  '/media/images/home/bucees.webp',
+  '/media/images/home/tahoe-boat-flag.webp',
+  '/media/images/home/doubleneck_profile.webp',
+];
+
 export const HOME = {
   greeting: "Hi, I'm Dipen.",
   intro: "I'm a software developer, musician and a Penn State graduate.",
   lead:
     'This site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.',
+  about:
+    "A little more about me: I'm a software developer by trade, a guitarist since 2009, and a collector of small things (mugs, magnets, vinyls, recipes). I grew up in Mumbai, did my master's at Penn State Harrisburg, and now live and work in Pennsylvania. The Academic and Professional pages have the longer version.",
   exploreHeading: 'Explore',
   viewsHeading: 'Two other ways to browse this site',
   viewsIntro:
     'Everything here is also available as a working iPod Classic and as an old-school iTunes window. Same content, same database, a very different feel.',
   ipodCard: {
-    title: 'The iPod',
+    title: 'iPod',
     body: 'Spin the click wheel, flip through Cover Flow, and let the music keep playing while you browse. Works on phones too.',
     cta: 'Open the iPod',
   },
@@ -28,7 +45,6 @@ export const HOME = {
     cta: 'Open iTunes',
     mobileNote: 'iTunes needs a larger screen; on a phone it opens the iPod instead.',
   },
-  latestHeading: 'Latest',
   mosaicHeading: 'A few pictures',
 } as const;
 

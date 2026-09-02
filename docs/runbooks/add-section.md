@@ -13,8 +13,9 @@ The data spine is shared, so a section is added once and surfaced per view.
 4. **Search**: add a group in `src/lib/search/searchContent.ts` (with the
    iTunes `entryId` and a `focusId`), and a target in
    `src/lib/main/searchTargets.ts` so main-site results link to the right page.
-5. **Main site**: a page under `app/(main)/...`, an entry in
-   `src/lib/main/routes.ts` (nav + footer + sitemap) and copy in `src/content/`.
+5. **Main site**: a page under `app/(main)/<section>/<page>/`, an entry in
+   `src/lib/main/routes.ts` (nav, footer, sitemap, home Explore cards) and
+   copy in `src/content/`. There are no section landing pages.
 6. **iPod**: builder in `src/lib/menu/dataSources.ts` + node in
    `src/lib/menu/tree.ts`. **iTunes**: loader in `src/lib/itunes/loaders.ts` +
    row in `src/lib/itunes/catalog.ts`.

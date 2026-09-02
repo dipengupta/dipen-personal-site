@@ -14,7 +14,7 @@ export default async function AcademicPage() {
   const [siteConfig, projects, education] = await Promise.all([siteConfigFromRequest(), getSection('projects'), getSection('education')]);
   return (
     <>
-      <PageHeader eyebrow={{ label: 'About', href: '/about' }} title="Academic" intro={ABOUT.academicBlurb} />
+      <PageHeader eyebrow="About" title="Academic" intro={ABOUT.academicBlurb} />
       <section className="section" aria-labelledby="projects">
         <div className="section-head">
           <h2 id="projects">{ABOUT.projectsHeading}</h2>

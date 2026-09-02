@@ -30,28 +30,26 @@
   touch-action: none;
 }
 
-.hints {
+.links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
   font-size: 12px;
-  color: var(--hint-color);
   letter-spacing: 0.02em;
 }
 
-.links {
-  position: fixed;
-  top: 14px;
-  right: 18px;
-  display: flex;
-  gap: 8px;
-}
-
 .viewLink {
-  font-size: 12px;
   color: var(--hint-color);
   text-decoration: none;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 4px 10px;
-  opacity: 0.75;
+  opacity: 0.8;
+}
+
+.linkSep {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--hint-color);
+  opacity: 0.6;
 }
 
 .viewLink:hover {
@@ -70,18 +68,9 @@
     --device-w: min(100vw - 16px, calc((100dvh - 30px) * 0.62));
   }
 
-  .hints,
-  .itunesLink {
+  /* iTunes would only bounce a portrait phone back; keep the way home. */
+  .itunesLink,
+  .linkSep {
     display: none;
-  }
-
-  /* The way back to the main site stays reachable on a phone: a small pill in
-     the bottom safe area (the iTunes link is hidden, it would only bounce back). */
-  .links {
-    top: auto;
-    right: auto;
-    bottom: max(6px, env(safe-area-inset-bottom));
-    left: 50%;
-    transform: translateX(-50%);
   }
 }

@@ -15,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...ALL_PAGES.map((p) => ({ url: `${origin}${p.href}`, priority: 0.7 })),
     ...articles.map((a) => ({ url: `${origin}/collections/articles/${a.slug}`, priority: 0.6 })),
     ...recipes.map((r) => ({ url: `${origin}/collections/recipes/${r.slug}`, priority: 0.5 })),
-    ...blends.map((b) => ({ url: `${origin}/collections/spice-blends/${b.slug}`, priority: 0.5 })),
+    ...blends.map((b) => ({ url: `${origin}/collections/recipes/${b.slug}`, priority: 0.5 })),
     ...DEVICE_VIEWS.map((v) => ({ url: `${origin}${v.path}`, priority: 0.4 })),
   ];
 }

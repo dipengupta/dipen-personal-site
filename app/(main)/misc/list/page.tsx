@@ -14,7 +14,7 @@ export default async function ListPage() {
   const items = await getSection('list');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Misc', href: '/misc' }} title="List" intro="Two lists, kept since moving to the States." />
+      <PageHeader eyebrow="Misc" title="List" intro="Two lists, kept since moving to the States." />
       {GROUPS.map((g) => (
         <section key={g.key} className="section" style={{ marginBlock: '2rem' }}>
           <h2>{g.label}</h2>

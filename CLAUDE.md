@@ -84,3 +84,6 @@ docker compose up --build
 - Search ids double as DOM ids for deep links (`#guitar-3`, `#tweet-702`);
   keep `src/lib/search/searchContent.ts` and `src/lib/main/searchTargets.ts` in step.
 - Tweets must all have a date (`posted_at` NOT NULL; the seeder throws).
+- Sections have no landing pages; add retired URLs to `REDIRECTS` in
+  `src/lib/main/routes.ts` rather than leaving 404s behind.
+- Live feed refreshes never block a request (`refreshInBackground`).

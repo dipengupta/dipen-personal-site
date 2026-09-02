@@ -11,7 +11,7 @@ export default async function ProfessionalPage() {
   const linkedin = SOCIALS.find((s) => s.id === 'linkedin');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'About', href: '/about' }} title="Professional" intro={ABOUT.professionalIntro}>
+      <PageHeader eyebrow="About" title="Professional" intro={ABOUT.professionalIntro}>
         {linkedin && (
           <a className="btn btn-sm" href={linkedin.url} target="_blank" rel="noopener noreferrer">
             LinkedIn

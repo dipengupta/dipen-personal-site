@@ -19,9 +19,7 @@ export default function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
         <div className="footer-grid">
           {SECTIONS.map((s) => (
             <div key={s.id}>
-              <h4>
-                <Link href={s.href}>{s.label}</Link>
-              </h4>
+              <h4>{s.label}</h4>
               <ul>
                 {s.pages.map((p) => (
                   <li key={p.href}>
@@ -35,7 +33,7 @@ export default function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
             <h4>Other views</h4>
             <ul>
               <li>
-                <a href={viewHref('ipod', siteConfig)}>The iPod</a>
+                <a href={viewHref('ipod', siteConfig)}>iPod</a>
               </li>
               <li>
                 <a href={viewHref('itunes', siteConfig)}>iTunes</a>

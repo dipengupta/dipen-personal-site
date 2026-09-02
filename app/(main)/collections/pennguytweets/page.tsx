@@ -10,11 +10,7 @@ export default async function TweetsPage() {
   const tweets = await getSection('tweets');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Collections', href: '/collections' }} title="pennguytweets" intro={`The @20swithepennguy archive: ${tweets.length} numbered thoughts, newest first.`}>
-        <a className="btn btn-sm" href="https://x.com/20swithepennguy" target="_blank" rel="noopener noreferrer">
-          Follow on X
-        </a>
-      </PageHeader>
+      <PageHeader eyebrow="Collections" title="pennguytweets" />
       <TweetFeed handle="@20swithepennguy" tweets={tweets.map((t) => ({ number: t.number, text: t.text, date: t.postedAt, url: t.url }))} />
     </>
   );

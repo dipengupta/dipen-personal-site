@@ -16,7 +16,7 @@ export default async function YouTubePage() {
   }
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Music', href: '/music' }} title={MUSIC.youtube.heading} intro={MUSIC.youtube.blurb}>
+      <PageHeader eyebrow="Music" title={MUSIC.youtube.heading} intro={MUSIC.youtube.blurb}>
         <a className="btn btn-sm" href={MUSIC.youtube.channelUrl} target="_blank" rel="noopener noreferrer">
           {MUSIC.youtube.cta}
         </a>

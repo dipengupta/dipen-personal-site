@@ -11,7 +11,7 @@ export default function SoundCloudPage() {
   const player = `https://w.soundcloud.com/player/?url=${encodeURIComponent(MUSIC.soundcloud.tracksUrl)}&color=%23b3451f&auto_play=false&show_user=true&show_teaser=false`;
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Music', href: '/music' }} title={MUSIC.soundcloud.heading} intro={MUSIC.soundcloud.blurb}>
+      <PageHeader eyebrow="Music" title={MUSIC.soundcloud.heading} intro={MUSIC.soundcloud.blurb}>
         <a className="btn btn-sm" href={MUSIC.soundcloud.profileUrl} target="_blank" rel="noopener noreferrer">
           {MUSIC.soundcloud.cta}
         </a>

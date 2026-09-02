@@ -5,7 +5,7 @@ import { useIpodStore } from '@/lib/store/ipodStore';
 import styles from './SleepLayer.module.css';
 
 /** The backlight times out and the screen dims after this much idle. */
-const IDLE_MS = 60000;
+const IDLE_MS = 5 * 60 * 1000;
 
 /**
  * Display-off / sleep. Holding play/pause sets `asleep` (in the store); here we

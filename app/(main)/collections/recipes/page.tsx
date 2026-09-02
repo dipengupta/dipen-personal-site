@@ -1,48 +1,60 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import PageHeader from '@/components/main/PageHeader';
-import { RECIPE_CATEGORIES, recipesWithSlugs } from '@/lib/main/recipes';
+import Hero, { type HeroImage } from '@/components/main/Hero';
+import { pictureData } from '@/components/main/Picture';
+import { getSection } from '@/lib/content/queries';
+import { RECIPE_CATEGORIES, recipesWithSlugs, spiceBlendsWithSlugs } from '@/lib/main/recipes';
 
-export const metadata: Metadata = { title: 'Recipes' };
+export const metadata: Metadata = { title: 'Recipes and Spice Blends' };
 export const dynamic = 'force-dynamic';
 
 export default async function RecipesPage() {
-  const recipes = await recipesWithSlugs();
+  const [recipes, blends, kitchen] = await Promise.all([recipesWithSlugs(), spiceBlendsWithSlugs(), getSection('kitchen')]);
+  const heroImages: HeroImage[] = kitchen.map((k) => ({ ...pictureData(k.imagePath), alt: k.title }));
+  const groups = [
+    ...RECIPE_CATEGORIES.map((c) => ({
+      id: c.key,
+      label: c.label,
+      rows: recipes.filter((r) => r.category === c.key).map((r) => ({ id: `recipe-${r.id}`, title: r.title, href: `/collections/recipes/${r.slug}`, source: r.sourceUrl ? new URL(r.sourceUrl).hostname.replace(/^www\./, '') : null })),
+    })),
+    {
+      id: 'spice-blends',
+      label: 'Spice Blends',
+      rows: blends.map((b) => ({ id: `spice-${b.id}`, title: b.title, href: `/collections/recipes/${b.slug}`, source: b.sourceUrl ? new URL(b.sourceUrl).hostname.replace(/^www\./, '') : null })),
+    },
+  ];
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Collections', href: '/collections' }} title="Recipes" intro="Things I cook often enough to have written down. Recipes saved from elsewhere link to their source." />
-      <nav className="pill-row" aria-label="Categories">
-        {RECIPE_CATEGORIES.map((c) => (
-          <a key={c.key} className="pill" href={`#${c.key}`}>
-            {c.label}
+      <Hero images={heroImages} compact>
+        <p className="eyebrow" style={{ color: 'rgba(255,255,255,0.8)' }}>
+          Collections
+        </p>
+        <h1>Recipes and Spice Blends</h1>
+        <p>Things I cook often enough to have written down, and the blends to keep on hand.</p>
+      </Hero>
+      <nav className="pill-row" aria-label="Categories" style={{ marginTop: '1.5rem' }}>
+        {groups.map((g) => (
+          <a key={g.id} className="pill" href={`#${g.id}`}>
+            {g.label} <span className="muted">{g.rows.length}</span>
           </a>
         ))}
-        <Link className="pill" href="/collections/spice-blends">
-          Spice Blends
-        </Link>
       </nav>
-      {RECIPE_CATEGORIES.map((c) => {
-        const rows = recipes.filter((r) => r.category === c.key);
-        if (!rows.length) return null;
-        return (
-          <section key={c.key} id={c.key} className="section" aria-labelledby={`h-${c.key}`}>
-            <div className="section-head">
-              <h2 id={`h-${c.key}`}>{c.label}</h2>
-              <span className="muted">{rows.length}</span>
-            </div>
-            <div className="grid">
-              {rows.map((r) => (
-                <Link key={r.id} id={`recipe-${r.id}`} href={`/collections/recipes/${r.slug}`} className="card">
-                  <div className="card-body">
-                    <h3>{r.title}</h3>
-                    <p>{r.body.split('\n')[0].slice(0, 110)}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        );
-      })}
+      {groups.map((g) => (
+        <section key={g.id} id={g.id} aria-labelledby={`h-${g.id}`}>
+          <div className="group-head">
+            <h2 id={`h-${g.id}`}>{g.label}</h2>
+            <span className="muted">{g.rows.length}</span>
+          </div>
+          <ul className="compact-list">
+            {g.rows.map((r) => (
+              <li key={r.id} id={r.id}>
+                <Link href={r.href}>{r.title}</Link>
+                {r.source && <span className="muted">via {r.source}</span>}
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
     </>
   );
 }

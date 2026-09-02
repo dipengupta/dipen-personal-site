@@ -9,7 +9,7 @@ export default async function WifiPage() {
   const names = await getSection('wifi');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Misc', href: '/misc' }} title="Amusing Wi-Fi Names" intro="Spotted in the wild, written down before they scrolled away." />
+      <PageHeader eyebrow="Misc" title="Amusing Wi-Fi Names" intro="Spotted in the wild, written down before they scrolled away." />
       <ul className="list-plain" style={{ maxWidth: 560 }}>
         {names.map((n) => (
           <li key={n.id} id={`wifi-${n.id}`} className="row">

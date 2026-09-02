@@ -15,7 +15,7 @@ test.describe('subdomain routing', () => {
     await expect(page).toHaveURL(`http://ipod.site.localhost:${PORT}/`);
     await expect(page.getByTestId('ipod')).toBeVisible();
     // Cross-view links are absolute subdomain URLs on a recognised domain.
-    await expect(page.getByRole('link', { name: /iTunes view/ })).toHaveAttribute(
+    await expect(page.getByRole('link', { name: 'iTunes' })).toHaveAttribute(
       'href',
       `http://itunes.site.localhost:${PORT}/`,
     );

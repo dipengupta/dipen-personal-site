@@ -105,10 +105,11 @@ describe('iTunes catalog integrity', () => {
     expect(entry?.loader).toBeTruthy();
   });
 
-  it('MUSIC leads and DEVICES is last, matching SIDEBAR_GROUPS order', () => {
+  it('DEVICES leads and MUSIC follows, matching SIDEBAR_GROUPS order', () => {
     const firstIndex = (g: string) => catalog.findIndex((e) => e.group === g);
-    expect(SIDEBAR_GROUPS[0]).toBe('MUSIC');
-    expect(SIDEBAR_GROUPS[SIDEBAR_GROUPS.length - 1]).toBe('DEVICES');
+    expect(SIDEBAR_GROUPS[0]).toBe('DEVICES');
+    expect(SIDEBAR_GROUPS[1]).toBe('MUSIC');
+    expect(SIDEBAR_GROUPS[SIDEBAR_GROUPS.length - 1]).toBe('ODDS & ENDS');
     // Static rows are laid out in the declared group order (PLAYLISTS is dynamic,
     // so it has no static rows to position).
     const groupFirsts = SIDEBAR_GROUPS.map(firstIndex).filter((i) => i >= 0);

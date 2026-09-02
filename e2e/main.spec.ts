@@ -5,25 +5,19 @@ import { expect, test } from '@playwright/test';
 // desktop and the phone project.
 
 const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
-  { path: '/music', heading: /Music/, item: 'a[href="/music/guitars"]' },
   { path: '/music/guitars', heading: /Guitars/, item: '[data-testid="photo-grid"] figure' },
   { path: '/music/youtube', heading: /YouTube/, item: 'article[id^="yt-"]' },
-  { path: '/music/instagram', heading: /UGG Chronicles/, item: 'article[id^="ugg-"] video' },
+  { path: '/music/instagram', heading: /UGG Chronicles/, item: 'article[id^="ugg-"] img' },
   { path: '/music/soundcloud', heading: /SoundCloud/, item: 'iframe.embed' },
   { path: '/music/octavium', heading: /Octavium/, item: 'img[src*="Octavium"]' },
-  { path: '/collections', heading: /Collections/, item: 'a[href="/collections/recipes"]' },
   { path: '/collections/articles', heading: /Articles/, item: '[data-testid="article-list"] li' },
-  { path: '/collections/mugs', heading: /Mug Collection/, item: 'li[id^="mug-"]' },
-  { path: '/collections/vinyls-and-magnets', heading: /Vinyls/, item: '#magnets img' },
-  { path: '/collections/recipes', heading: /Recipes/, item: 'a[id^="recipe-"]' },
-  { path: '/collections/spice-blends', heading: /Spice Blends/, item: 'a[id^="spice-"]' },
+  { path: '/collections/mugs-vinyls-and-magnets', heading: /Mugs, Vinyls and Magnets/, item: 'li[id^="mug-"]' },
+  { path: '/collections/recipes', heading: /Recipes and Spice Blends/, item: 'li[id^="spice-"] a' },
   { path: '/collections/kitchen-wins', heading: /Kitchen Wins/, item: '[data-testid="photo-grid"] figure' },
   { path: '/collections/alison', heading: /Alison/, item: '[data-testid="photo-grid"] figure' },
   { path: '/collections/pennguytweets', heading: /pennguytweets/, item: '[data-testid="tweet-feed"] li' },
-  { path: '/about', heading: /About/, item: 'a[href="/about/academic"]' },
   { path: '/about/academic', heading: /Academic/, item: 'article[id^="project-"]' },
   { path: '/about/professional', heading: /Professional/, item: '[data-testid="timeline"] li' },
-  { path: '/misc', heading: /Misc/, item: 'a[href="/misc/concerts"]' },
   { path: '/misc/concerts', heading: /Concerts/, item: 'li[id^="concert-"]' },
   { path: '/misc/list', heading: /List/, item: 'li[id^="list-"]' },
   { path: '/misc/wifi-names', heading: /Wi-Fi/, item: 'li[id^="wifi-"]' },
@@ -31,14 +25,14 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
 ];
 
 test.describe('main site', () => {
-  test('home: hero, sections, latest, other views, mosaic', async ({ page }) => {
+  test('home: hero, sections, other views, mosaic, contact', async ({ page }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: /Hi, I'm Dipen/ })).toBeVisible();
     await expect(page.getByTestId('hero').locator('img.is-current')).toHaveCount(1);
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Latest' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Say hi', level: 2 })).toBeVisible();
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);
     await expect(page.getByTestId('view-card-itunes')).toHaveAttribute('href', /itunes/);
     await expect(page.getByTestId('mosaic').locator('img').first()).toBeAttached();
@@ -64,12 +58,27 @@ test.describe('main site', () => {
     await expect(page.getByTestId('article-body').locator('p').first()).toBeVisible();
 
     await page.goto('/collections/recipes');
-    await page.locator('a[id^="recipe-"]').first().click();
+    await page.locator('li[id^="recipe-"] a').first().click();
     await expect(page).toHaveURL(/\/collections\/recipes\/[a-z0-9-]+$/);
     await expect(page.locator('.prose p, .prose li').first()).toBeVisible();
 
-    await page.goto('/collections/spice-blends/indian-everyday-masala');
+    await page.goto('/collections/recipes/indian-everyday-masala');
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Indian Everyday Masala/);
+  });
+
+  test('section and old URLs redirect to real pages', async ({ page }) => {
+    await page.goto('/music');
+    await expect(page).toHaveURL(/\/music\/guitars$/);
+    await page.goto('/collections/mugs');
+    await expect(page).toHaveURL(/\/collections\/mugs-vinyls-and-magnets$/);
+  });
+
+  test('Instagram episodes show a poster and play on demand', async ({ page }) => {
+    await page.goto('/music/instagram');
+    const card = page.locator('article[id^="ugg-"]').first();
+    await expect(card.locator('img')).toHaveAttribute('src', /\/media\/images\/ugg\//);
+    await card.getByRole('button', { name: /Play episode/ }).click();
+    await expect(card.locator('video')).toHaveAttribute('src', /\/api\/video\/ugg-\d+\.mp4/);
   });
 
   test('unknown pages 404 within the site chrome', async ({ page }) => {
@@ -92,7 +101,7 @@ test.describe('main site', () => {
 
   test('the no-JS search page works too', async ({ page }) => {
     await page.goto('/search?q=Montreal');
-    await expect(page.getByRole('link', { name: 'Montreal' })).toHaveAttribute('href', /\/collections\/mugs#mug-\d+/);
+    await expect(page.getByRole('link', { name: 'Montreal' })).toHaveAttribute('href', /\/collections\/mugs-vinyls-and-magnets#mug-\d+/);
   });
 
   test('a deep link highlights its target', async ({ page }) => {
@@ -132,9 +141,9 @@ test.describe('main site on a phone', () => {
   test('the menu sheet opens and navigates', async ({ page }) => {
     await page.goto('/');
     await page.getByRole('button', { name: 'Open menu' }).click();
-    await page.locator('#mobile-nav').getByRole('link', { name: 'Recipes' }).click();
+    await page.locator('#mobile-nav').getByRole('link', { name: /Recipes/ }).click();
     await expect(page).toHaveURL(/\/collections\/recipes$/);
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Recipes');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/Recipes/);
   });
 
   test('nothing scrolls sideways', async ({ page }) => {
@@ -151,10 +160,13 @@ test.describe('main site on desktop', () => {
 
   test('Cmd+K opens search and the nav dropdown lists pages', async ({ page }) => {
     await page.goto('/');
-    await page.keyboard.press('ControlOrMeta+k');
-    await expect(page.getByRole('combobox', { name: 'Search' })).toBeFocused();
+    // The shortcut listener attaches on hydration; retry the key press until it takes.
+    await expect(async () => {
+      await page.keyboard.press('ControlOrMeta+k');
+      await expect(page.getByRole('combobox', { name: 'Search' })).toBeFocused({ timeout: 1000 });
+    }).toPass({ timeout: 15000 });
     await page.keyboard.press('Escape');
     await page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Collections' }).hover();
-    await expect(page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: 'Mugs' })).toBeVisible();
+    await expect(page.getByRole('navigation', { name: 'Sections' }).getByRole('link', { name: /Mugs/ })).toBeVisible();
   });
 });

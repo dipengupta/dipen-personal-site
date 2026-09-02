@@ -108,15 +108,13 @@ export default function Ipod() {
         <Screen />
         <ClickWheel />
       </div>
-      <p className={styles.hints} aria-hidden="true">
-        ↑↓ scroll · Enter select · Esc menu · Space play/pause · hold Enter: Now Playing · hold Space: sleep
-      </p>
       <nav className={styles.links} aria-label="Other views">
         <a className={styles.viewLink} href={mainHref}>
-          Main site →
+          Main site
         </a>
-        <a className={` `} href={itunesHref}>
-          iTunes view →
+        <span className={styles.linkSep} aria-hidden="true" />
+        <a className={`${styles.viewLink} ${styles.itunesLink}`} href={itunesHref}>
+          iTunes
         </a>
       </nav>
     </div>

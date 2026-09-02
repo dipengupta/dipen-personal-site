@@ -10,6 +10,12 @@
 import type { CatalogEntry } from './types';
 
 export const catalog: CatalogEntry[] = [
+  // --- DEVICES -------------------------------------------------------------
+  // `viewId` resolves through src/lib/site/views.ts (subdomain or path prefix);
+  // `href` is the path-mode fallback and what the catalog tests pin.
+  { id: 'dev-ipod', label: "Dipen's iPod", icon: '◼', group: 'DEVICES', view: 'external', href: '/ipod', viewId: 'ipod' },
+  { id: 'dev-main', label: "Dipen's Website", icon: '◼', group: 'DEVICES', view: 'external', href: '/', viewId: 'main' },
+
   // --- MUSIC ---------------------------------------------------------------
   { id: 'mus-guitars', label: 'Guitars', icon: '🎸', group: 'MUSIC', view: 'coverflow', loader: 'guitars', unit: 'guitar' },
   { id: 'mus-youtube', label: 'YouTube', icon: '📺', group: 'MUSIC', view: 'video', loader: 'youtube', unit: 'video' },
@@ -44,15 +50,10 @@ export const catalog: CatalogEntry[] = [
   { id: 'odd-list', label: 'List', icon: '📝', group: 'ODDS & ENDS', view: 'tracks', loader: 'list', unit: 'entry' },
   { id: 'odd-wifi', label: 'Amusing Wi-Fi Names', icon: '📶', group: 'ODDS & ENDS', view: 'tracks', loader: 'wifi', unit: 'network' },
   { id: 'odd-links', label: 'Links', icon: '🔗', group: 'ODDS & ENDS', view: 'external', loader: 'links', unit: 'link' },
-
-  // --- DEVICES -------------------------------------------------------------
-  // `viewId` resolves through src/lib/site/views.ts (subdomain or path prefix);
-  // `href` is the path-mode fallback and what the catalog tests pin.
-  { id: 'dev-ipod', label: "Dipen's iPod", icon: '◼', group: 'DEVICES', view: 'external', href: '/ipod', viewId: 'ipod' },
-  { id: 'dev-main', label: "Dipen's Website", icon: '◼', group: 'DEVICES', view: 'external', href: '/', viewId: 'main' },
 ];
 
 export const SIDEBAR_GROUPS: Array<CatalogEntry['group']> = [
+  'DEVICES',
   'MUSIC',
   'PHOTOS',
   'COLLECTIONS',
@@ -60,7 +61,6 @@ export const SIDEBAR_GROUPS: Array<CatalogEntry['group']> = [
   'ABOUT',
   'PLAYLISTS',
   'ODDS & ENDS',
-  'DEVICES',
 ];
 
 /** The first content entry, selected on load (lands on a Grid gallery). */

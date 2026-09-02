@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { searchResultHref } from '@/lib/main/searchTargets';
-import { ALL_PAGES, SECTIONS } from '@/lib/main/routes';
+import { ALL_PAGES, REDIRECTS, SECTIONS } from '@/lib/main/routes';
 import { slugify } from '@/lib/main/slug';
 
 describe('slugify', () => {
@@ -47,10 +47,18 @@ describe('searchResultHref', () => {
 });
 
 describe('main-site route table', () => {
+  it('redirects old and section URLs to real pages', () => {
+    const known = new Set(ALL_PAGES.map((p) => p.href));
+    for (const r of REDIRECTS) {
+      expect(known.has(r.source), r.source).toBe(false);
+      expect(known.has(r.destination.replace(/\/:slug$/, '')), r.destination).toBe(true);
+    }
+  });
+
   it('has the agreed sections and unique hrefs', () => {
     expect(SECTIONS.map((s) => s.label)).toEqual(['Music', 'Collections', 'About', 'Misc']);
     const hrefs = ALL_PAGES.map((p) => p.href);
     expect(new Set(hrefs).size).toBe(hrefs.length);
-    for (const s of SECTIONS) for (const p of s.pages) expect(p.href.startsWith(`${s.href}/`)).toBe(true);
+    for (const s of SECTIONS) for (const p of s.pages) expect(p.href.startsWith(`/${s.id}/`)).toBe(true);
   });
 });

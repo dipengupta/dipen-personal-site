@@ -9,7 +9,7 @@ export default async function LinksPage() {
   const links = await getSection('links');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Misc', href: '/misc' }} title="Links" intro="Elsewhere on the internet." />
+      <PageHeader eyebrow="Misc" title="Links" intro="Elsewhere on the internet." />
       <ul className="list-plain" style={{ maxWidth: 560 }}>
         {links.map((l) => (
           <li key={l.id} id={`link-${l.id}`} className="row">

@@ -17,7 +17,7 @@ export default async function ArticlePage({ params }: Params) {
   if (!article) notFound();
   return (
     <article>
-      <PageHeader eyebrow={{ label: 'Articles', href: '/collections/articles' }} title={article.title} />
+      <PageHeader eyebrow="Articles" title={article.title} />
       <p className="article-meta">
         {article.publishedLabel}.{' '}
         <a href={article.sourceUrl} target="_blank" rel="noopener noreferrer">

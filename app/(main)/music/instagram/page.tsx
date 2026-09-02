@@ -1,8 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import PageHeader from '@/components/main/PageHeader';
+import { pictureData } from '@/components/main/Picture';
+import UggCard from '@/components/main/UggCard';
 import { MUSIC } from '@/content/music';
 import { getSection } from '@/lib/content/queries';
+import { imageInfo } from '@/lib/media/manifest';
 
 export const metadata: Metadata = { title: 'Instagram: UGG Chronicles' };
 export const dynamic = 'force-dynamic';
@@ -19,7 +22,7 @@ export default async function InstagramPage({ searchParams }: { searchParams: Pr
   const shown = episodes.filter((e) => e.year === year);
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Music', href: '/music' }} title={MUSIC.instagram.heading} intro={MUSIC.instagram.blurb}>
+      <PageHeader eyebrow="Music" title={MUSIC.instagram.heading} intro={MUSIC.instagram.blurb}>
         <a className="btn btn-sm" href={MUSIC.instagram.profileUrl} target="_blank" rel="noopener noreferrer">
           {MUSIC.instagram.cta}
         </a>
@@ -31,30 +34,22 @@ export default async function InstagramPage({ searchParams }: { searchParams: Pr
           </Link>
         ))}
       </nav>
-      <p className="muted">
-        {shown.length} episodes in {year}, newest first. Videos stream from this site and start when you press play.
-      </p>
       <div className="grid grid-3" data-testid="ugg-grid">
-        {shown.map((e) => (
-          <article key={e.episode} className="card video-card" id={`ugg-${e.episode}`}>
-            <video controls preload="none" playsInline src={`/api/video/${e.filename}`} aria-label={`Episode ${e.episode}: ${e.name}`} />
-            <div className="card-body">
-              <h3>
-                Ep. {e.episode}: {e.name}
-              </h3>
-              <p>
-                {e.postedAt.slice(0, 10)}
-                {e.durationSec ? ` / ${mmss(e.durationSec)}` : ''}
-              </p>
-              {e.caption && (
-                <details className="desc">
-                  <summary>Caption</summary>
-                  <p style={{ whiteSpace: 'pre-line', marginTop: '0.5rem' }}>{e.caption}</p>
-                </details>
-              )}
-            </div>
-          </article>
-        ))}
+        {shown.map((e) => {
+          const posterUrl = `/media/images/ugg/ugg-${e.episode}.webp`;
+          return (
+            <UggCard
+              key={e.episode}
+              episode={e.episode}
+              name={e.name}
+              date={e.postedAt.slice(0, 10)}
+              duration={mmss(e.durationSec)}
+              caption={e.caption}
+              videoSrc={`/api/video/${e.filename}`}
+              poster={imageInfo(posterUrl) ? pictureData(posterUrl) : null}
+            />
+          );
+        })}
       </div>
     </>
   );

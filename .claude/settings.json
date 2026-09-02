@@ -95,7 +95,6 @@
       "Bash(rm -rf /*)",
       "Bash(git push --force*)",
       "Bash(git push -f*)",
-      "Read(./media/**)",
       "Read(./.env)",
       "Read(./.env.local)",
       "Read(./.env.production)"

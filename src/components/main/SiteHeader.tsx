@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import type { SectionDef } from '@/lib/main/routes';
+import { sectionHref, type SectionDef } from '@/lib/main/routes';
 import SearchDialog from './SearchDialog';
 
 const SearchIcon = () => (
@@ -37,7 +37,7 @@ export default function SiteHeader({ sections }: { sections: SectionDef[] }) {
     };
   }, [menuOpen]);
 
-  const current = (href: string) => pathname === href || pathname.startsWith(`${href}/`);
+  const current = (s: SectionDef) => s.pages.some((p) => pathname === p.href || pathname.startsWith(`${p.href}/`));
 
   return (
     <header className="header">
@@ -49,7 +49,7 @@ export default function SiteHeader({ sections }: { sections: SectionDef[] }) {
           <ul>
             {sections.map((s) => (
               <li key={s.id} className="nav-item">
-                <Link href={s.href} aria-current={current(s.href) || undefined}>
+                <Link href={sectionHref(s)} aria-current={current(s) || undefined}>
                   {s.label}
                 </Link>
                 <div className="menu">
@@ -68,7 +68,7 @@ export default function SiteHeader({ sections }: { sections: SectionDef[] }) {
         <div className="header-actions">
           <button type="button" className="icon-btn" onClick={() => setSearchOpen(true)} aria-label="Search">
             <SearchIcon />
-            <span className="kbd">Cmd K</span>
+            <span className="kbd" aria-hidden="true">K</span>
           </button>
           <button
             type="button"
@@ -88,7 +88,7 @@ export default function SiteHeader({ sections }: { sections: SectionDef[] }) {
         <nav id="mobile-nav" className="mobile-nav" aria-label="Sections">
           {sections.map((s) => (
             <div key={s.id} className="group">
-              <Link href={s.href}>{s.label}</Link>
+              <span>{s.label}</span>
               <ul>
                 {s.pages.map((p) => (
                   <li key={p.href}>

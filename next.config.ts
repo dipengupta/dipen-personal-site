@@ -1,5 +1,6 @@
 import { execFileSync } from 'node:child_process';
 import type { NextConfig } from 'next';
+import { REDIRECTS } from './src/lib/main/routes';
 import { securityHeaders } from './src/lib/site/securityHeaders';
 
 /**
@@ -22,6 +23,9 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ['better-sqlite3'],
   // The e2e server builds into its own directory so it can run alongside `next dev`.
   distDir: process.env.NEXT_DIST_DIR ?? '.next',
+  async redirects() {
+    return REDIRECTS.map((r) => ({ ...r, permanent: true }));
+  },
   async headers() {
     return [{ source: '/(.*)', headers: securityHeaders }];
   },

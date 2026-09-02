@@ -37,7 +37,7 @@ export default function YouTubeCard({ videoId, title, date, description }: { vid
         <p>{date}</p>
         {description && (
           <details className="desc">
-            <summary>Description</summary>
+            <summary className="clamp-2">{description.replace(/\s+/g, ' ').trim()}</summary>
             <p style={{ whiteSpace: 'pre-line', marginTop: '0.5rem' }}>{description}</p>
           </details>
         )}

@@ -9,6 +9,7 @@ episode list is `src/data/seed/ugg.json` (committed).
 
    ```bash
    npm run import:ugg:instagram -- --source ~/Downloads/instagram-export
+   npm run media:posters        # thumbnail per new episode (needs ffmpeg)
    npm run media:check          # every episode has its file
    npm run seed && npm test
    git add src/data/seed/ugg.json && git commit -m "Add UGG Chronicles #219-224"

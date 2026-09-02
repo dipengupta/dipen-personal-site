@@ -53,8 +53,10 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 
 - **Information architecture** lives in `src/lib/main/routes.ts`: four
   sections (Music, Collections, About, Misc) with their pages and blurbs.
-  Header dropdowns, the mobile sheet, section overview pages, the footer and
-  the sitemap all render from it.
+  Sections have no landing page (a top-level nav item links to its first page
+  and opens the dropdown); `REDIRECTS` keeps the section and retired URLs
+  working. Header, mobile sheet, footer, sitemap and the home page's Explore
+  cards all render from the table.
 - **Pages** are server components calling `src/lib/content/queries.ts`
   (`force-dynamic`: the DB is local and reads are sub-millisecond, and the
   live fetchers stay in the request path). Client components are limited to
@@ -102,7 +104,9 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
   its own About text (it explains that view).
 - **Live fetchers** (`src/lib/fetchers/`): YouTube channel RSS (6h),
   Substack RSS (24h, sanitized), Spotify playlist previews (6h, keyless).
-  All are additive with the seed as a complete fallback.
+  All are additive with the seed as a complete fallback, and they run in the
+  background (`refreshInBackground` in queries.ts): a request is answered
+  from the database at once and the next one sees the merged rows.
 - **Search** (`src/lib/search/searchContent.ts`): case-insensitive
   substring scan over every table plus static pages; `scope` selects the
   iTunes or main-site result set (Academic is main-only, Playlists
@@ -118,6 +122,9 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 - `scripts/media/ingest-images.ts` writes WebP variants (800 base, 400,
   1600) and `src/data/media-manifest.json` (dimensions, variants, blur,
   EXIF date); with `--gallery` it appends gallery rows.
+  `scripts/media/video-posters.ts` grabs a frame per UGG episode with ffmpeg
+  and feeds it to the same ingest (`images/ugg/ugg-<n>.webp`), so the
+  Instagram page has thumbnails and plays the video on demand.
   `scripts/media/check.ts` and `tests/unit/mediaManifest.test.ts` keep
   references, manifest and files consistent. `push-fly.sh` / `pull-fly.sh`
   sync with the volume.

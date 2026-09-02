@@ -11,7 +11,7 @@ export default async function AlisonPage() {
   const items = await getSection('alison');
   return (
     <>
-      <PageHeader eyebrow={{ label: 'Collections', href: '/collections' }} title="Alison" intro={`${items.length} photos, oldest to newest.`} />
+      <PageHeader eyebrow="Collections" title="Alison" intro={`${items.length} photos, oldest to newest.`} />
       <PhotoGrid items={items.map((a) => ({ ...pictureData(a.imagePath), id: `alison-${a.id}`, alt: `${a.title}, ${a.description}`, caption: a.description }))} />
     </>
   );

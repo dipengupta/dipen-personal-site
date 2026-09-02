@@ -493,7 +493,7 @@ test('pennguytweets: newest-first list opens a tweet with its date', async ({ pa
 });
 
 test('the iTunes view is reachable and links back to the iPod', async ({ page }) => {
-  await page.getByRole('link', { name: /iTunes view/ }).click();
+  await page.getByRole('link', { name: 'iTunes' }).click();
   await expect(page).toHaveURL(/\/itunes/);
   await expect(page.getByTestId('itunes-window')).toBeVisible();
   await page.getByRole('link', { name: "Dipen's iPod" }).click();

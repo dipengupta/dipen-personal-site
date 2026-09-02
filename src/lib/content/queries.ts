@@ -17,6 +17,25 @@ import { refreshSpotifyIfStale } from '@/lib/fetchers/spotify';
 import { refreshArticlesIfStale } from '@/lib/fetchers/substack';
 import { refreshYoutubeIfStale } from '@/lib/fetchers/youtubeRss';
 
+/**
+ * Live refreshes are staleness-gated and additive, but a stale check used to
+ * block the response for up to the fetch timeout (8 s) on the first request
+ * of the day. They now run in the background: the request is answered from
+ * the database immediately and the next one sees the merged rows. One run
+ * per feed at a time; failures are already swallowed inside each fetcher.
+ */
+const inFlight = new Map<string, Promise<void>>();
+export function refreshInBackground(key: string, run: () => Promise<unknown>): void {
+  if (inFlight.has(key)) return;
+  const p = Promise.resolve()
+    .then(run)
+    .catch(() => undefined)
+    .then(() => {
+      inFlight.delete(key);
+    });
+  inFlight.set(key, p);
+}
+
 /** Playlists with their (Spotify) tracks nested, ordered by sortOrder. */
 function recommendations(db: Db) {
   const playlists = db.select().from(schema.recommendations).orderBy(asc(schema.recommendations.sortOrder)).all();
@@ -88,7 +107,7 @@ export function isContentSection(name: string): name is ContentSection {
 /** Rows for one section, after any staleness-gated live refresh that applies to it. */
 export async function getSection<K extends ContentSection>(key: K, db: Db = getDb()): Promise<SectionRows<K>> {
   // Additive, keyless Spotify track refresh; failures fall back to the seed.
-  if (key === 'recommendations') await refreshSpotifyIfStale(db);
+  if (key === 'recommendations') refreshInBackground('spotify', () => refreshSpotifyIfStale(db));
   return sections[key](db) as SectionRows<K>;
 }
 
@@ -96,7 +115,7 @@ export type ArticleSummary = Pick<typeof schema.articles.$inferSelect, 'slug' | 
 
 /** Newest first. Pulls new Substack posts additively when stale. */
 export async function listArticles(db: Db = getDb()): Promise<ArticleSummary[]> {
-  await refreshArticlesIfStale(db);
+  refreshInBackground('substack', () => refreshArticlesIfStale(db));
   return db
     .select({
       slug: schema.articles.slug,
@@ -116,7 +135,7 @@ export function getArticle(slug: string, db: Db = getDb()) {
 
 /** Newest first. Merges the channel RSS when stale. */
 export async function listYoutube(db: Db = getDb()) {
-  await refreshYoutubeIfStale(db);
+  refreshInBackground('youtube', () => refreshYoutubeIfStale(db));
   return db.select().from(schema.youtubeVideos).orderBy(desc(schema.youtubeVideos.publishedAt)).all();
 }
 

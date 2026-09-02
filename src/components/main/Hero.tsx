@@ -6,16 +6,26 @@ import { blurStyle } from './Picture';
 
 export interface HeroImage extends PictureData {
   alt: string;
-  caption: string;
 }
 
 /**
- * The homepage hero: one photo at a time, crossfading every `intervalMs`.
- * Only the current and the next image are mounted (the next one loads during
- * the interval), transitions are opacity-only, and the cycle pauses under
- * prefers-reduced-motion or while the tab is hidden.
+ * One photo at a time, crossfading every `intervalMs`. Only the current and
+ * the next image are mounted (the next one loads during the interval),
+ * transitions are opacity-only, and the cycle pauses under
+ * prefers-reduced-motion or while the tab is hidden. Portrait photos are
+ * anchored high so faces survive the wide crop.
  */
-export default function Hero({ images, intervalMs = 8000, children }: { images: HeroImage[]; intervalMs?: number; children?: React.ReactNode }) {
+export default function Hero({
+  images,
+  intervalMs = 8000,
+  compact = false,
+  children,
+}: {
+  images: HeroImage[];
+  intervalMs?: number;
+  compact?: boolean;
+  children?: React.ReactNode;
+}) {
   const [index, setIndex] = useState(0);
   const [reduced, setReduced] = useState(false);
 
@@ -30,11 +40,11 @@ export default function Hero({ images, intervalMs = 8000, children }: { images: 
   useEffect(() => {
     if (reduced || images.length < 2) return;
     let timer: ReturnType<typeof setInterval> | undefined;
+    const stop = () => timer && clearInterval(timer);
     const start = () => {
       stop();
       timer = setInterval(() => setIndex((i) => (i + 1) % images.length), intervalMs);
     };
-    const stop = () => timer && clearInterval(timer);
     const onVisibility = () => (document.hidden ? stop() : start());
     start();
     document.addEventListener('visibilitychange', onVisibility);
@@ -44,12 +54,12 @@ export default function Hero({ images, intervalMs = 8000, children }: { images: 
     };
   }, [images.length, intervalMs, reduced]);
 
-  if (images.length === 0) return <div className="hero hero-empty">{children}</div>;
+  if (images.length === 0) return <div className={`hero ${compact ? 'hero-compact' : ''}`}>{children}</div>;
   const next = (index + 1) % images.length;
   const shown = images.length > 1 ? [index, next] : [index];
 
   return (
-    <div className="hero" data-testid="hero">
+    <div className={`hero ${compact ? 'hero-compact' : ''}`} data-testid="hero">
       <div className="hero-stage" aria-live="off">
         {shown.map((i) => (
           // eslint-disable-next-line @next/next/no-img-element
@@ -65,17 +75,16 @@ export default function Hero({ images, intervalMs = 8000, children }: { images: 
             decoding="async"
             fetchPriority={i === index ? 'high' : 'low'}
             className={`hero-img ${i === index ? 'is-current' : ''}`}
-            style={blurStyle(images[i].blur)}
+            style={{ ...blurStyle(images[i].blur), objectPosition: images[i].height > images[i].width ? '50% 22%' : '50% 40%' }}
           />
         ))}
       </div>
       <div className="hero-overlay" />
       <div className="hero-content">{children}</div>
-      <p className="hero-caption">{images[index].caption}</p>
-      <ol className="hero-dots" aria-label="Hero photos">
+      <ol className="hero-dots" aria-label="Photos">
         {images.map((img, i) => (
           <li key={img.src}>
-            <button type="button" aria-label={`Show ${img.caption}`} aria-current={i === index || undefined} onClick={() => setIndex(i)} />
+            <button type="button" aria-label={`Photo ${i + 1}`} aria-current={i === index || undefined} onClick={() => setIndex(i)} />
           </li>
         ))}
       </ol>

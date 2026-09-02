@@ -11,7 +11,7 @@ export default async function ArticlesPage() {
   return (
     <>
       <PageHeader
-        eyebrow={{ label: 'Collections', href: '/collections' }}
+        eyebrow="Collections"
         title="Articles"
         intro="Writing has always been cathartic for me. Everything here was written by hand, and the full text is saved on this site in case the original links ever break."
       />

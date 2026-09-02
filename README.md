@@ -53,6 +53,7 @@ to the volume. See `docs/runbooks/deploy.md`.
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run media:ingest` | Normalize photos into `media/` + the manifest (see runbook) |
 | `npm run media:check` | Verify references vs manifest vs files on disk |
+| `npm run media:posters` | Extract a poster frame per UGG episode (ffmpeg) |
 | `npm run content:recipe` / `content:article` / `content:tweets` | Add content to the seed files |
 | `npm run import:ugg:instagram` | Import new UGG Chronicles episodes from an Instagram export |
 | `npm run import:spotify` | Refresh the committed Spotify preview seed |

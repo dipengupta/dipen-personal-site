@@ -2,10 +2,11 @@ import Link from 'next/link';
 import Hero, { type HeroImage } from '@/components/main/Hero';
 import Mosaic, { type MosaicImage } from '@/components/main/Mosaic';
 import { pictureData } from '@/components/main/Picture';
+import SocialIcon from '@/components/main/SocialIcon';
 import ViewCards from '@/components/main/ViewCards';
-import { HOME } from '@/content/site';
-import { getSection, listArticles, listYoutube } from '@/lib/content/queries';
-import { SECTIONS } from '@/lib/main/routes';
+import { CONTACT, HERO_PHOTOS, HOME, SOCIALS } from '@/content/site';
+import { getSection } from '@/lib/content/queries';
+import { SECTIONS, sectionHref } from '@/lib/main/routes';
 import { siteConfigFromRequest } from '@/lib/site/request';
 
 export const dynamic = 'force-dynamic';
@@ -26,26 +27,24 @@ function interleave<T>(...lists: T[][]): T[] {
 }
 
 export default async function HomePage() {
-  const [siteConfig, photos, guitars, kitchen, alison, articles, videos, ugg] = await Promise.all([
+  const [siteConfig, photos, guitars, kitchen, alison] = await Promise.all([
     siteConfigFromRequest(),
     getSection('photos'),
     getSection('guitars'),
     getSection('kitchen'),
     getSection('alison'),
-    listArticles(),
-    listYoutube(),
-    getSection('ugg'),
   ]);
 
-  const heroImages: HeroImage[] = photos.map((p) => ({ ...pictureData(p.imagePath), alt: p.description || p.title, caption: p.title }));
+  const byPath = new Map(photos.map((p) => [p.imagePath, p]));
+  const heroImages: HeroImage[] = HERO_PHOTOS.filter((src) => byPath.has(src)).map((src) => ({
+    ...pictureData(src),
+    alt: byPath.get(src)!.description || byPath.get(src)!.title,
+  }));
   const mosaic: MosaicImage[] = interleave(
     sample(guitars.slice(1), 8).map((g) => ({ ...pictureData(g.imagePath), alt: g.name, href: '/music/guitars' })),
     sample(kitchen, 8).map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/kitchen-wins' })),
-    sample(alison, 8).map((a) => ({ ...pictureData(a.imagePath), alt: `, `, href: '/collections/alison' })),
+    sample(alison, 8).map((a) => ({ ...pictureData(a.imagePath), alt: `${a.title}, ${a.description}`, href: '/collections/alison' })),
   );
-  const latestArticle = articles[0];
-  const latestVideo = videos[0];
-  const latestEpisode = ugg[0];
 
   return (
     <>
@@ -53,10 +52,10 @@ export default async function HomePage() {
         <h1>{HOME.greeting}</h1>
         <p>{HOME.intro}</p>
         <div className="hero-actions">
-          <Link className="btn btn-primary" href="/music">
+          <Link className="btn btn-primary" href="/music/guitars">
             Start with the music
           </Link>
-          <Link className="btn" href="/about">
+          <Link className="btn" href="/about/academic">
             About me
           </Link>
         </div>
@@ -64,6 +63,7 @@ export default async function HomePage() {
 
       <section className="section">
         <p className="lead">{HOME.lead}</p>
+        <p className="lead">{HOME.about}</p>
       </section>
 
       <section className="section" aria-labelledby="explore">
@@ -72,45 +72,19 @@ export default async function HomePage() {
         </div>
         <div className="grid grid-3">
           {SECTIONS.map((s) => (
-            <Link key={s.id} href={s.href} className="card">
+            <div key={s.id} className="card">
               <div className="card-body">
                 <h3>{s.label}</h3>
-                <p>{s.blurb}</p>
-                <p style={{ marginTop: '0.6rem', fontSize: '0.88rem' }}>{s.pages.map((p) => p.label).join(' / ')}</p>
+                <ul className="card-links">
+                  {s.pages.map((p) => (
+                    <li key={p.href}>
+                      <Link href={p.href}>{p.label}</Link>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </Link>
+            </div>
           ))}
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="latest">
-        <div className="section-head">
-          <h2 id="latest">{HOME.latestHeading}</h2>
-        </div>
-        <div className="grid grid-3">
-          {latestArticle && (
-            <Link href={`/collections/articles/${latestArticle.slug}`} className="latest-card">
-              <span>Newest article</span>
-              <strong>{latestArticle.title}</strong>
-              <span>{latestArticle.publishedLabel}</span>
-            </Link>
-          )}
-          {latestVideo && (
-            <Link href={`/music/youtube#yt-${latestVideo.videoId}`} className="latest-card">
-              <span>Newest video</span>
-              <strong>{latestVideo.title}</strong>
-              <span>{latestVideo.publishedAt.slice(0, 10)}</span>
-            </Link>
-          )}
-          {latestEpisode && (
-            <Link href={`/music/instagram?year=${latestEpisode.year}#ugg-${latestEpisode.episode}`} className="latest-card">
-              <span>Newest UGG Chronicles episode</span>
-              <strong>
-                Ep. {latestEpisode.episode}: {latestEpisode.name}
-              </strong>
-              <span>{latestEpisode.postedAt.slice(0, 10)}</span>
-            </Link>
-          )}
         </div>
       </section>
 
@@ -127,6 +101,32 @@ export default async function HomePage() {
           <h2 id="pictures">{HOME.mosaicHeading}</h2>
         </div>
         <Mosaic images={mosaic} />
+      </section>
+
+      <section className="section" aria-labelledby="contact" id="contact">
+        <div className="section-head">
+          <h2 id="contact-heading">{CONTACT.heading}</h2>
+        </div>
+        <p className="lead">
+          {CONTACT.body}{' '}
+          {CONTACT.emails.map((e, i) => (
+            <span key={e}>
+              <a href={`mailto:${e}`}>{e}</a>
+              {i < CONTACT.emails.length - 1 ? ' or ' : '.'}
+            </span>
+          ))}
+        </p>
+        <div className="socials">
+          {SOCIALS.map((s) => (
+            <a key={s.id} href={s.url} target="_blank" rel="noopener noreferrer">
+              <SocialIcon id={s.id} />
+              {s.label}
+            </a>
+          ))}
+        </div>
+        <p className="muted" style={{ marginTop: '1rem' }}>
+          <Link href={sectionHref(SECTIONS[2])}>Academic</Link> and <Link href="/about/professional">Professional</Link> have the longer story.
+        </p>
       </section>
     </>
   );
