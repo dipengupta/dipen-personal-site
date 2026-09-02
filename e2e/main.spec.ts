@@ -29,7 +29,16 @@ test.describe('main site', () => {
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: /Hi, I'm Dipen/ })).toBeVisible();
-    await expect(page.getByTestId('hero').locator('.hero-slide.is-current')).toHaveCount(1);
+    const hero = page.getByTestId('hero').locator('visible=true');
+    await expect(hero.locator('.hero-slide.is-current')).toHaveCount(1);
+    // Swiping left moves to the next photo.
+    const stage = hero.locator('.hero-stage');
+    const hb = (await stage.boundingBox())!;
+    await page.mouse.move(hb.x + hb.width * 0.7, hb.y + hb.height / 2);
+    await page.mouse.down();
+    await page.mouse.move(hb.x + hb.width * 0.3, hb.y + hb.height / 2, { steps: 6 });
+    await page.mouse.up();
+    await expect(hero.locator('.hero-dots [aria-current="true"]')).toHaveAttribute('aria-label', 'Photo 2');
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
     await expect(page.locator('.index-row')).toHaveCount(4);
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);

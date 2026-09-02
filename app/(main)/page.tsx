@@ -39,6 +39,23 @@ export default async function HomePage() {
     ...pictureData(src),
     alt: byPath.get(src)!.description || byPath.get(src)!.title,
   }));
+  // Wide screens get the landscape photos, phones the portraits (CSS shows one hero per orientation).
+  const landscape = heroImages.filter((i) => i.width >= i.height);
+  const portrait = heroImages.filter((i) => i.width < i.height);
+  const heroContent = (
+    <>
+      <h1>{HOME.greeting}</h1>
+      <p>{HOME.intro}</p>
+      <div className="hero-actions">
+        <Link className="btn btn-primary" href="/music/guitars">
+          Start with the music
+        </Link>
+        <Link className="btn" href="/about/academic">
+          About me
+        </Link>
+      </div>
+    </>
+  );
   const mosaic: MosaicImage[] = interleave(
     sample(guitars.slice(1), 8).map((g) => ({ ...pictureData(g.imagePath), alt: g.name, href: '/music/guitars' })),
     sample(kitchen, 8).map((k) => ({ ...pictureData(k.imagePath), alt: k.title, href: '/collections/recipes' })),
@@ -47,18 +64,12 @@ export default async function HomePage() {
 
   return (
     <>
-      <Hero images={heroImages}>
-        <h1>{HOME.greeting}</h1>
-        <p>{HOME.intro}</p>
-        <div className="hero-actions">
-          <Link className="btn btn-primary" href="/music/guitars">
-            Start with the music
-          </Link>
-          <Link className="btn" href="/about/academic">
-            About me
-          </Link>
-        </div>
-      </Hero>
+      <div className="hero-only-desktop">
+        <Hero images={landscape.length ? landscape : heroImages}>{heroContent}</Hero>
+      </div>
+      <div className="hero-only-mobile">
+        <Hero images={portrait.length ? portrait : heroImages}>{heroContent}</Hero>
+      </div>
 
       <section className="section" aria-labelledby="explore">
         <div className="section-head">

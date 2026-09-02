@@ -12,7 +12,7 @@ export default async function AlisonPage() {
   return (
     <>
       <PageHeader eyebrow="Collections" title="Alison" />
-      <PhotoGrid items={items.map((a) => ({ ...pictureData(a.imagePath), id: `alison-${a.id}`, alt: `${a.title}, ${a.description}`, caption: a.description }))} />
+      <PhotoGrid items={items.map((a) => ({ ...pictureData(a.imagePath), id: `alison-${a.id}`, alt: `${a.title}, ${a.description}`, caption: a.description }))} size="sm" sizes="(min-width: 900px) 180px, 33vw" />
     </>
   );
 }
