@@ -1684,3 +1684,18 @@ a.card:hover {
     text-align: center;
   }
 }
+
+/* Phone hero copy: a touch smaller so the paragraph stays below the face */
+@media (max-width: 899px) {
+  .hero-content {
+    padding: 1.1rem 1.1rem 0.6rem;
+  }
+  .hero-content h1 {
+    font-size: 2rem;
+    margin-bottom: 0.2em;
+  }
+  .hero-content p {
+    font-size: 0.95rem;
+    line-height: 1.45;
+  }
+}
