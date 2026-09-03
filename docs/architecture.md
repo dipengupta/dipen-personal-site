@@ -68,10 +68,21 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 - **Images**: `src/components/main/Picture.tsx` renders `srcset` from the
   media manifest with intrinsic dimensions and a blur placeholder;
   `pictureData()` hands the same fields to client components.
+- **About**: two pages over three tables. `/about/journey` merges
+  `timeline_entries` (jobs) and `education` (schools) onto one line with
+  `src/lib/main/journey.ts`, which parses the start of each authored span
+  ("Feb '25 - Present") to interleave them newest first. No cards: every row is
+  one two-column grid, the heading block (kind, title, organisation) left of the
+  centre line and the dates plus description across the dot from it. Work and
+  school are told apart by the dot, filled or hollow, not by side. `/about/projects` renders the
+  `projects` table. The DOM ids stay `job-<id>`, `education-<id>` and
+  `project-<id>` so search deep links keep working.
 - **Search**: header dialog (Cmd/Ctrl+K) and `/search` both use
   `searchContent(db, q, { scope: 'main' })`; `src/lib/main/searchTargets.ts`
   maps a result's group + id to a page URL with a `#id` that
-  `FocusHash` scrolls to and highlights. iTunes keeps its own `entryId` path.
+  `FocusHash` scrolls to and highlights. The `academic` group is the one that
+  splits across two pages (schools to Journey, projects to Projects).
+  iTunes keeps its own `entryId` path.
 - **URLs**: articles use slugs derived from their titles at seed time;
   recipes and spice blends slugify the title at request time
   (`src/lib/main/recipes.ts`).

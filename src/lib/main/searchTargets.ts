@@ -26,9 +26,11 @@ export function searchResultHref(type: string, id: string, title: string): strin
     case 'mugs':
       return `/collections/mugs-vinyls-and-magnets#${id}`;
     case 'timeline':
-      return `/about/professional#${id}`;
+      return `/about/journey#${id}`;
+    // One search group, two main-site pages: schools sit on the journey
+    // timeline next to the jobs, projects have their own page.
     case 'academic':
-      return `/about/academic#${id}`;
+      return id.startsWith('education-') ? `/about/journey#${id}` : `/about/projects#${id}`;
     case 'concerts':
       return `/misc/concerts#${id}`;
     case 'links':

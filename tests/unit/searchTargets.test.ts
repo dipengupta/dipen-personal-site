@@ -26,6 +26,7 @@ describe('searchResultHref', () => {
       ['mugs', 'mug-4', ''],
       ['timeline', 'job-1', ''],
       ['academic', 'project-1', ''],
+      ['academic', 'education-1', ''],
       ['concerts', 'concert-1', ''],
       ['links', 'link-1', ''],
       ['wifi', 'wifi-1', ''],
@@ -43,6 +44,10 @@ describe('searchResultHref', () => {
     }
     expect(searchResultHref('recipes', 'recipe-3', 'Chicken Rice')).toBe('/collections/recipes/chicken-rice');
     expect(searchResultHref('videos', 'ugg-204', '')).toBe('/music/instagram#ugg-204');
+    // The one search group that splits across two pages.
+    expect(searchResultHref('academic', 'project-1', '')).toBe('/about/projects#project-1');
+    expect(searchResultHref('academic', 'education-1', '')).toBe('/about/journey#education-1');
+    expect(searchResultHref('timeline', 'job-1', '')).toBe('/about/journey#job-1');
   });
 });
 

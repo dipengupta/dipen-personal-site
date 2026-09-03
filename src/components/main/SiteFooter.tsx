@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { CONTACT, FOOTER, SOCIALS } from '@/content/site';
+import { FOOTER, SOCIALS } from '@/content/site';
 import { SECTIONS } from '@/lib/main/routes';
 import { viewHref, type SiteConfig } from '@/lib/site/views';
 import SocialIcon from './SocialIcon';
@@ -30,7 +30,7 @@ export default function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
             </div>
           ))}
           <div>
-            <h4>Other views</h4>
+            <h4>Check these out!</h4>
             <ul>
               <li>
                 <a href={viewHref('ipod', siteConfig)}>iPod</a>
@@ -38,14 +38,6 @@ export default function SiteFooter({ siteConfig }: { siteConfig: SiteConfig }) {
               <li>
                 <a href={viewHref('itunes', siteConfig)}>iTunes</a>
               </li>
-            </ul>
-            <h4 style={{ marginTop: '1.2rem' }}>{CONTACT.heading}</h4>
-            <ul>
-              {CONTACT.emails.map((e) => (
-                <li key={e}>
-                  <a href={`mailto:${e}`}>{e}</a>
-                </li>
-              ))}
             </ul>
           </div>
         </div>

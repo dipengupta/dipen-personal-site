@@ -21,7 +21,7 @@ describe('content query layer (shared by the API routes and the main site)', () 
     expect(isContentSection('locations')).toBe(false);
   });
 
-  it('seeds the Academic page: projects newest first with parsed links, and education', async () => {
+  it('seeds the academic slice: projects newest first with parsed links, and education', async () => {
     const projects = await getSection('projects', db);
     expect(projects[0].title).toBe('This website');
     expect(projects[0].links.some((l) => l.view === 'ipod')).toBe(true);

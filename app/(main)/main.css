@@ -702,36 +702,145 @@ a.card:hover {
 }
 
 /* Timeline */
-.timeline {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  border-left: 2px solid var(--line);
+/* Journey: jobs and schools interleaved on one line, newest first. No cards,
+   just type on the line. On a wide screen the line runs down the middle with
+   work on the left and school on the right, and each entry's description sits
+   across the dot from its heading. One column on a phone. */
+.page-head .jtl-key {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.2rem;
+  margin: 0 0 0.9rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
-.timeline li {
-  position: relative;
-  padding: 0 0 2rem 1.5rem;
+.jtl-key span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
 }
-.timeline li::before {
+.jtl-key span::before {
   content: '';
-  position: absolute;
-  left: -7px;
-  top: 0.45em;
   width: 12px;
   height: 12px;
   border-radius: 50%;
+  border: 2px solid var(--accent);
+}
+.jtl-key-work::before {
   background: var(--accent);
 }
-.timeline h3 {
-  font-family: var(--font-sans);
+.jtl {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+.jtl::before {
+  content: '';
+  position: absolute;
+  top: 0.6rem;
+  bottom: 0.6rem;
+  left: 15px;
+  width: 2px;
+  background: var(--line);
+}
+.jtl-item {
+  position: relative;
+  padding: 0 0 2rem 3.2rem;
+}
+.jtl-year {
+  position: absolute;
+  left: 0;
+  top: 0.1rem;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--bg);
+  color: var(--accent);
+  font-size: 0.72rem;
   font-weight: 600;
-  font-size: 1.1rem;
+  display: grid;
+  place-items: center;
+}
+.jtl-work .jtl-year {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+.jtl-head .jtl-kind {
+  margin: 0 0 0.6rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.jtl-work .jtl-kind {
+  color: var(--accent);
+}
+.jtl-head {
+  border-radius: var(--radius-sm);
+}
+.jtl-head h2 {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
   margin: 0;
 }
-.timeline .when {
+.jtl-head .jtl-org {
+  margin: 0.15rem 0 0;
+  color: var(--muted);
+}
+.jtl-aside {
+  margin: 0.9rem 0 0;
+}
+.jtl-aside .when {
+  margin: 0;
   color: var(--muted);
   font-size: 0.92rem;
-  margin-bottom: 0.4rem;
+}
+.jtl .jtl-body {
+  margin: 0.6rem 0 0;
+  max-width: 62ch;
+}
+@media (min-width: 900px) {
+  .jtl::before {
+    left: 50%;
+    margin-left: -1px;
+  }
+  .jtl-item {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 5rem;
+    padding: 0 0 2.75rem;
+  }
+  .jtl-head,
+  .jtl-aside {
+    grid-row: 1;
+  }
+  /* Every row reads the same way: the heading left of the line, the dates and
+     description across the dot from it. Work and school are told apart by the
+     dot (filled or hollow), not by which side they sit on. */
+  .jtl-head {
+    grid-column: 1;
+    text-align: right;
+  }
+  .jtl-aside {
+    grid-column: 2;
+  }
+  /* Across the dot from its heading, the dates need no separating margin. */
+  .jtl-aside {
+    margin: 0;
+  }
+  .jtl-year {
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    width: 44px;
+    height: 44px;
+    font-size: 0.85rem;
+  }
 }
 
 /* Footer */
@@ -1277,8 +1386,9 @@ a.card:hover {
     align-items: start;
   }
 }
-.project h3 {
+.project h2 {
   font-family: var(--font-sans);
+  font-size: 1.35rem;
   font-weight: 600;
   margin-bottom: 0.2rem;
 }

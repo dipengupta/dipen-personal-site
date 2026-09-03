@@ -15,8 +15,8 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
   { path: '/collections/recipes', heading: /Recipes and Spice Blends/, item: 'li[id^="spice-"] a' },
   { path: '/collections/alison', heading: /Alison/, item: '[data-testid="photo-grid"] figure' },
   { path: '/collections/pennguytweets', heading: /pennguytweets/, item: '[data-testid="tweet-feed"] li' },
-  { path: '/about/academic', heading: /Academic/, item: 'article[id^="project-"]' },
-  { path: '/about/professional', heading: /Professional/, item: '[data-testid="timeline"] li' },
+  { path: '/about/journey', heading: /Journey/, item: '[data-testid="journey"] [id^="job-"]' },
+  { path: '/about/projects', heading: /Projects/, item: 'article[id^="project-"]' },
   { path: '/misc/concerts', heading: /Concerts/, item: 'li[id^="concert-"]' },
   { path: '/misc/list', heading: /List/, item: 'li[id^="list-"]' },
   { path: '/misc/wifi-names', heading: /Wi-Fi/, item: 'li[id^="wifi-"]' },
@@ -87,6 +87,10 @@ test.describe('main site', () => {
     await expect(page).toHaveURL(/\/music\/guitars$/);
     await page.goto('/collections/mugs');
     await expect(page).toHaveURL(/\/collections\/mugs-vinyls-and-magnets$/);
+    await page.goto('/about/professional');
+    await expect(page).toHaveURL(/\/about\/journey$/);
+    await page.goto('/about/academic');
+    await expect(page).toHaveURL(/\/about\/projects$/);
   });
 
   test('Instagram episodes show a poster and play on demand', async ({ page }) => {
@@ -121,9 +125,13 @@ test.describe('main site', () => {
   });
 
   test('a deep link highlights its target', async ({ page }) => {
-    await page.goto('/about/academic');
-    const id = await page.locator('li[id^="education-"]').first().getAttribute('id');
-    await page.goto(`/about/academic#${id}`);
+    await page.goto('/about/journey');
+    const id = await page.locator('[id^="education-"]').first().getAttribute('id');
+    // Arrive the way a search result does: a fresh load with the hash already
+    // in the URL. Changing only the hash of the page you are on can land mid
+    // hydration, where the router rewrites the URL without it.
+    await page.goto('/');
+    await page.goto(`/about/journey#${id}`);
     await expect(page.locator(`#${id}`)).toHaveClass(/is-focused/);
   });
 
@@ -163,7 +171,7 @@ test.describe('main site on a phone', () => {
   });
 
   test('nothing scrolls sideways', async ({ page }) => {
-    for (const path of ['/', '/music/guitars', '/collections/recipes', '/collections/pennguytweets', '/about/academic']) {
+    for (const path of ['/', '/music/guitars', '/collections/recipes', '/collections/pennguytweets', '/about/journey']) {
       await page.goto(path);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, path).toBeLessThanOrEqual(1);

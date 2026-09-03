@@ -30,8 +30,7 @@ export const HOME = {
     "I'm a software developer, musician and a Penn State graduate, and this site is a home for the things I make and keep: guitars and the videos I record with them, recipes and spice blends, articles, a mug collection that grew out of hand, and a few other odds and ends.",
   exploreHeading: 'Explore',
   viewsHeading: 'Two other ways to browse this site',
-  viewsIntro:
-    'Everything here is also available as a working iPod Classic and as an old-school iTunes window. Same content, same database, a very different feel.',
+  viewsIntro: 'Everything here is also available as a working iPod Classic and as an old-school iTunes window!',
   ipodCard: {
     title: 'iPod',
     body: 'Spin the click wheel, flip through Cover Flow, and let the music keep playing while you browse. Works on phones too.',
@@ -42,12 +41,6 @@ export const HOME = {
     mobileNote: 'iTunes needs a larger screen; on a phone it opens the iPod instead.',
   },
   mosaicHeading: 'A few pictures',
-} as const;
-
-export const CONTACT = {
-  heading: 'Say hi',
-  body: 'The quickest way to reach me is email.',
-  emails: ['dipenrgupta@gmail.com', 'dipenrgupta@icloud.com'],
 } as const;
 
 export interface SocialLink {
@@ -77,11 +70,9 @@ export const ABOUT = {
   heading: 'About',
   intro:
     "I'm Dipen: a software developer by trade, a guitarist since 2009, and a collector of small things (mugs, magnets, vinyls, recipes). I grew up in Mumbai, did my master's at Penn State Harrisburg, and now live and work in Pennsylvania.",
-  academicBlurb: 'Projects I have built and the schools that got me here.',
-  professionalBlurb: 'Where I have worked and what I did there.',
-  projectsHeading: 'Projects',
-  projectsIntro: 'Here are some of my past projects.',
-  educationHeading: 'Education',
-  educationIntro: 'Here is my educational journey.',
-  professionalIntro: "Here you'll find the places I have worked at, and the roles I played in them.",
+  journeyIntro:
+    'Every job and every classroom, on one line and newest first. Filled dots are work, hollow ones are school.',
+  journeyWorkLabel: 'Work',
+  journeyEducationLabel: 'School',
+  projectsIntro: 'Things I have built, on my own and with other people, newest first.',
 } as const;

@@ -44,8 +44,8 @@ export const SECTIONS: SectionDef[] = [
     id: 'about',
     label: 'About',
     pages: [
-      { href: '/about/academic', label: 'Academic', blurb: 'Projects and education.' },
-      { href: '/about/professional', label: 'Professional', blurb: 'Roles, companies and dates.' },
+      { href: '/about/journey', label: 'Journey', blurb: 'Work and school, on one timeline.' },
+      { href: '/about/projects', label: 'Projects', blurb: 'Things I have built, newest first.' },
     ],
   },
   {
@@ -79,7 +79,9 @@ export function pageByHref(href: string): PageDef | undefined {
 export const REDIRECTS: Array<{ source: string; destination: string }> = [
   { source: '/music', destination: '/music/guitars' },
   { source: '/collections', destination: '/collections/recipes' },
-  { source: '/about', destination: '/about/academic' },
+  { source: '/about', destination: '/about/journey' },
+  { source: '/about/academic', destination: '/about/projects' },
+  { source: '/about/professional', destination: '/about/journey' },
   { source: '/misc', destination: '/misc/concerts' },
   { source: '/collections/mugs', destination: '/collections/mugs-vinyls-and-magnets' },
   { source: '/collections/vinyls-and-magnets', destination: '/collections/mugs-vinyls-and-magnets' },
