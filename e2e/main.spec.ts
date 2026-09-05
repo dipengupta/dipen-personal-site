@@ -142,9 +142,28 @@ test.describe('main site', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.locator('img')).toHaveAttribute('src', /\/media\/images\/alison\//);
     await page.keyboard.press('ArrowRight');
-    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 95');
+    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 155');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
+  });
+
+  test('Alison tiles show whole frames, not square crops', async ({ page }) => {
+    await page.goto('/collections/alison');
+    // Each tile carries its own photo's aspect ratio, so the story frames with
+    // a caption burned into the image do not get cropped by the grid.
+    const ratios = await page.evaluate(() =>
+      [...document.querySelectorAll('.photo-grid-natural .photo-tile')].map((tile) => {
+        // The width/height attributes carry the manifest's intrinsic size and
+        // are there whether or not a lazy image has loaded yet.
+        const img = tile.querySelector('img') as HTMLImageElement;
+        const box = tile.getBoundingClientRect();
+        return { tile: box.width / box.height, intrinsic: Number(img.getAttribute('width')) / Number(img.getAttribute('height')) };
+      }),
+    );
+    expect(ratios).toHaveLength(155);
+    for (const r of ratios) expect(r.tile).toBeCloseTo(r.intrinsic, 1);
+    // The collection mixes 3:4 phone photos with taller 9:16 story frames.
+    expect(new Set(ratios.map((r) => r.tile.toFixed(2))).size).toBeGreaterThan(1);
   });
 
   test('theme toggle flips the colour scheme and sticks', async ({ page }) => {

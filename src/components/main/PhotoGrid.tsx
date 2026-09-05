@@ -12,11 +12,18 @@ export interface PhotoItem extends PictureData {
 }
 
 /**
- * A square-tile grid with a lightbox: click (or Enter) opens the largest
- * variant in a <dialog>; arrows move between photos, Escape closes. Tiles
- * carry `id`s so search deep links can land on a specific photo.
+ * A tile grid with a lightbox: click (or Enter) opens the largest variant in
+ * a <dialog>; arrows move between photos, Escape closes. Tiles carry `id`s so
+ * search deep links can land on a specific photo.
+ *
+ * `fit` decides how a tile frames its photo. `square` (the default) crops to
+ * a uniform grid. `natural` gives every tile the photo's own aspect ratio, so
+ * nothing is cropped; rows keep their left-to-right order and go ragged along
+ * the bottom, which is the price of showing whole frames. Alison uses
+ * `natural`: many of those photos carry a caption burned into the image that
+ * a square crop cuts off.
  */
-export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md' }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg' }) {
+export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md', fit = 'square' }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg'; fit?: 'square' | 'natural' }) {
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -45,9 +52,14 @@ export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45
   const current = open !== null ? items[open] : null;
   return (
     <>
-      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''}`} data-testid="photo-grid">
+      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''} ${fit === 'natural' ? 'photo-grid-natural' : ''}`} data-testid="photo-grid">
         {items.map((item, i) => (
-          <figure key={item.id} id={item.id} className="photo-tile" style={{ margin: 0 }}>
+          <figure
+            key={item.id}
+            id={item.id}
+            className="photo-tile"
+            style={fit === 'natural' && item.width && item.height ? { margin: 0, aspectRatio: `${item.width} / ${item.height}` } : { margin: 0 }}
+          >
             <button type="button" onClick={() => setOpen(i)} aria-label={`Open ${item.caption ?? item.alt}`} style={{ all: 'unset', display: 'block', width: '100%', height: '100%', cursor: 'zoom-in' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={item.src} srcSet={item.srcSet} sizes={sizes} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" style={blurStyle(item.blur)} />

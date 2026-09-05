@@ -42,4 +42,9 @@ scripts/media/push-fly.sh --dry-run && scripts/media/push-fly.sh   # copy the fi
 scripts/deploy.sh                                                  # ship the seed/manifest change
 ```
 
+The Alison grid renders whole frames rather than square crops (`fit="natural"`
+on `PhotoGrid`), because many of the 2024-25 photos came from Instagram
+stories with the caption burned into the image. Tiles take each photo's own
+aspect ratio, so nothing is cut off.
+
 Push media before deploying so the new rows never point at missing files.

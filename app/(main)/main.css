@@ -525,6 +525,16 @@ a.card:hover {
 .photo-tile:hover img {
   transform: scale(1.03);
 }
+/* Whole frames instead of square crops: each tile carries the photo's own
+   aspect ratio inline, so nothing is cropped and a caption burned into the
+   image stays readable. Tiles keep their own height and hang from the top of
+   the row, which leaves the bottom edge ragged. */
+.photo-grid.photo-grid-natural {
+  align-items: start;
+}
+.photo-grid.photo-grid-natural .photo-tile {
+  aspect-ratio: auto;
+}
 .photo-tile figcaption {
   position: absolute;
   inset: auto 0 0 0;
