@@ -63,6 +63,7 @@ to the volume. See `docs/runbooks/deploy.md`.
 Each has a runbook in `docs/runbooks/`:
 [add a recipe](docs/runbooks/add-recipe.md),
 [add photos](docs/runbooks/add-images.md),
+[add Alison photos](docs/runbooks/add-alison-photos.md),
 [add an article](docs/runbooks/add-article.md),
 [add tweets](docs/runbooks/add-tweets.md),
 [import UGG videos](docs/runbooks/import-ugg.md),
