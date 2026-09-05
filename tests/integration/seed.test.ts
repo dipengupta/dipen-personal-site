@@ -21,10 +21,10 @@ describe('seedDb', () => {
     expect(db.select().from(schema.uggEpisodes).all()).toHaveLength(217);
     expect(db.select().from(schema.concerts).all().length).toBeGreaterThan(50);
     expect(db.select().from(schema.wifiNames).all()).toHaveLength(25);
-    // Gallery items split by category: 10 profile + 10 kitchen + 95 alison.
+    // Gallery items split by category: 11 profile + 10 kitchen + 155 alison.
     expect(
       db.select().from(schema.galleryItems).where(eq(schema.galleryItems.category, 'alison')).all(),
-    ).toHaveLength(95);
+    ).toHaveLength(155);
   });
 
   it('parses article bodies into HTML', () => {

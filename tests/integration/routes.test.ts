@@ -36,7 +36,7 @@ describe('/api/content/[section]', () => {
       expect(item.category).toBe('kitchen');
     }
     const alison = await (await getContent(req, params({ section: 'alison' }))).json();
-    expect(alison.items).toHaveLength(95);
+    expect(alison.items).toHaveLength(155);
     for (const item of alison.items) {
       expect(item.category).toBe('alison');
     }
