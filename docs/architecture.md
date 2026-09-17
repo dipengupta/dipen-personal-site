@@ -96,7 +96,9 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 
 - **Schema** (`src/lib/db/schema.ts`, Drizzle, SQLite): articles, tweets,
   ugg_episodes, guitars, locations (unused by any view), mugs,
-  gallery_items (profile/kitchen/alison), recipes, spice_blends,
+  gallery_items (profile/kitchen/alison; `quote` transcribes text burned
+  into the image, and is what the Alison page's toggle splits on),
+  recipes, spice_blends,
   timeline_entries, youtube_videos, soundcloud_tracks, recommendations (+
   tracks), links, concerts, wifi_names, list_items, projects, education,
   fetch_meta, seed_meta. Migrations are SQL files in `drizzle/`.

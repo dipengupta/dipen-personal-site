@@ -21,10 +21,17 @@ describe('seedDb', () => {
     expect(db.select().from(schema.uggEpisodes).all()).toHaveLength(217);
     expect(db.select().from(schema.concerts).all().length).toBeGreaterThan(50);
     expect(db.select().from(schema.wifiNames).all()).toHaveLength(25);
-    // Gallery items split by category: 11 profile + 10 kitchen + 155 alison.
-    expect(
-      db.select().from(schema.galleryItems).where(eq(schema.galleryItems.category, 'alison')).all(),
-    ).toHaveLength(155);
+    // Gallery items split by category: 11 profile + 10 kitchen + 221 alison.
+    const alison = db.select().from(schema.galleryItems).where(eq(schema.galleryItems.category, 'alison')).all();
+    expect(alison).toHaveLength(221);
+    // The Photos/Quotes toggle partitions the collection: a row either has
+    // text burned into the image or it does not.
+    expect(alison.filter((a) => a.quote).length).toBe(51);
+    expect(alison.filter((a) => !a.quote).length).toBe(170);
+    // Every quote row is one of the Instagram story frames.
+    for (const a of alison.filter((a) => a.quote)) {
+      expect(a.imagePath, a.imagePath).toMatch(/\/alison-(09[6-9]|1[0-5]\d)\.webp$/);
+    }
   });
 
   it('parses article bodies into HTML', () => {

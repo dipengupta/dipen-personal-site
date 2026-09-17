@@ -205,14 +205,16 @@ export function searchContent(db: Db, rawQuery: string, options: SearchOptions =
     'photos',
     'Photos',
     galleryRows
-      .filter((p) => galleryCfg[p.category] && firstMatch(q, [p.title, p.description]))
+      .filter((p) => galleryCfg[p.category] && firstMatch(q, [p.title, p.description, p.quote]))
       .map((p) => {
         const cfg = galleryCfg[p.category];
         return {
           id: `${cfg.prefix}-${p.id}`,
           entryId: cfg.entryId,
           title: p.title || p.description,
-          snippet: snippet(p.description || p.title, q),
+          // A quote lives on the image as pixels; when it is what matched, it
+          // is also the only useful thing to show.
+          snippet: snippet(p.quote?.toLowerCase().includes(q) ? p.quote : p.description || p.title, q),
         };
       }),
   );

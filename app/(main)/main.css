@@ -535,6 +535,12 @@ a.card:hover {
 .photo-grid.photo-grid-natural .photo-tile {
   aspect-ratio: auto;
 }
+/* One even surface of upright tiles. The Alison photos half is 3:4 almost
+   throughout, so this crops nothing worth keeping and the few taller story
+   frames stop breaking the rhythm of the grid. */
+.photo-grid.photo-grid-portrait .photo-tile {
+  aspect-ratio: 3 / 4;
+}
 .photo-tile figcaption {
   position: absolute;
   inset: auto 0 0 0;
@@ -695,6 +701,53 @@ a.card:hover {
 .pill:hover {
   border-color: var(--accent);
   text-decoration: none;
+}
+
+/* Two-up switch (Alison: Photos / Quotes). The thumb slides under whichever
+   label you pick; nothing but the thumb moves, and only by transform. */
+.segmented {
+  position: relative;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding: 3px;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+.segmented-thumb {
+  position: absolute;
+  inset: 3px auto 3px 3px;
+  width: calc(50% - 3px);
+  border-radius: 999px;
+  background: var(--accent);
+  transition: transform 0.25s ease;
+}
+.segmented[data-mode='quotes'] .segmented-thumb {
+  transform: translateX(100%);
+}
+.segmented-option {
+  position: relative;
+  z-index: 1;
+  padding: 0.35rem 1.1rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  font: inherit;
+  font-size: 0.92rem;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.25s ease;
+}
+.segmented-option[aria-current='true'] {
+  color: var(--accent-ink);
+}
+@media (prefers-reduced-motion: reduce) {
+  .segmented-thumb,
+  .segmented-option {
+    transition: none;
+  }
 }
 
 /* Focus highlight for #hash deep links (search results) */

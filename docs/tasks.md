@@ -11,10 +11,6 @@ Done list to the last few releases and prune it.
 
 - **Rotate old secrets**: the archived Django repo has Twitter/X API keys and
   a Django SECRET_KEY committed in `personalSite/settings.py`. Revoke them.
-- **Alison, Sep 2025 onward**: the collection ends at 2025-09-19 because that
-  is where the Instagram export used to fill it stops. Request a fresh export
-  covering 2025-09-20 to today (~30 photos, including a full autumn) and run
-  it through `docs/runbooks/add-alison-photos.md`.
 - **Places page**: the seeded `locations` table (27 visited places with trip
   notes) has no view. A simple list under Misc would surface it; the old Map
   Room is deliberately not coming back.
@@ -30,6 +26,13 @@ Done list to the last few releases and prune it.
   takes a saved HTML file; a fetch-by-URL mode would remove a manual step.
 
 ## Done
+
+- 2026-09-17: Alison grew from 155 to 221 photos off a batch of phone
+  originals, back-filling November 2023 to September 2025 and extending the
+  run to September 2026, which closes the gap the 2025-09-21 Instagram export
+  left. The page now has a Photos / Quotes toggle: the 51 frames with a quote
+  burned into the image are transcribed into `gallery_items.quote` and shown
+  on their own without the month and year.
 
 - 2026-09-04: Alison grew from 95 to 155 photos, closing the gap from December
   2023 to September 2025 out of the 2025-09-21 Instagram export. The grid now

@@ -89,7 +89,7 @@ test('photos cover flow shows profile pics and flips to captions', async ({ page
   await page.keyboard.press('Enter'); // Photos (first row)
   const coverflow = page.getByTestId('coverflow');
   await expect(coverflow).toBeVisible();
-  await expect(coverflow).toContainText('1 of 10');
+  await expect(coverflow).toContainText('1 of 11');
   // Side covers carry a soft dim; the focused one stays bright.
   await expect(coverflow.locator('[data-dimmed]').first()).toBeVisible();
   await expect(
@@ -97,7 +97,7 @@ test('photos cover flow shows profile pics and flips to captions', async ({ page
   ).toHaveCount(0);
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
-  await expect(coverflow).toContainText('3 of 10');
+  await expect(coverflow).toContainText('3 of 11');
   await page.keyboard.press('Enter');
   await expect(coverflow).toHaveAttribute('data-flipped', 'true');
   await expect(page.getByTestId('cover-back')).not.toBeEmpty();

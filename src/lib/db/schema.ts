@@ -66,12 +66,17 @@ export const mugs = sqliteTable('mugs', {
   sortOrder: integer('sort_order').notNull().default(0),
 });
 
+// Gallery photos. quote is the text burned into the image as pixels,
+// transcribed: null for a plain photo, set for the Alison story frames. It is
+// what the Alison page's Photos/Quotes toggle splits on, and the only way a
+// screen reader reaches that text.
 export const galleryItems = sqliteTable('gallery_items', {
   id: integer('id').primaryKey({ autoIncrement: true }),
   title: text('title').notNull(),
   description: text('description').notNull().default(''),
   imagePath: text('image_path').notNull(),
   category: text('category').notNull(),
+  quote: text('quote'),
   sortOrder: integer('sort_order').notNull().default(0),
 });
 

@@ -28,7 +28,9 @@ and it is what seed rows reference. Alison files follow `alison-NNN`.
 ## 2. Reference it
 
 - Gallery sections (`--gallery`) were appended to `src/data/seed/gallery.json`
-  already; edit titles/descriptions there if you like.
+  already; edit titles/descriptions there if you like. A photo with text
+  burned into it also wants a `"quote"` key holding that text, transcribed:
+  ingest cannot read pixels, so it is added by hand.
 - Guitars: add a row to `src/data/seed/guitars.json` with the new `imagePath`.
 - Anything else: use the same `/media/images/...` path.
 

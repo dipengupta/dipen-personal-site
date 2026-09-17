@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Page } from '@playwright/test';
 
 // The main website: every section renders real content, navigation and
 // search work, and the device views are one click away. Runs on both the
@@ -142,28 +142,69 @@ test.describe('main site', () => {
     await expect(dialog).toBeVisible();
     await expect(dialog.locator('img')).toHaveAttribute('src', /\/media\/images\/alison\//);
     await page.keyboard.press('ArrowRight');
-    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 155');
+    await expect(dialog.locator('.lightbox-caption')).toContainText('2 / 170');
     await page.keyboard.press('Escape');
     await expect(dialog).toBeHidden();
   });
 
-  test('Alison tiles show whole frames, not square crops', async ({ page }) => {
-    await page.goto('/collections/alison');
-    // Each tile carries its own photo's aspect ratio, so the story frames with
-    // a caption burned into the image do not get cropped by the grid.
-    const ratios = await page.evaluate(() =>
-      [...document.querySelectorAll('.photo-grid-natural .photo-tile')].map((tile) => {
-        // The width/height attributes carry the manifest's intrinsic size and
-        // are there whether or not a lazy image has loaded yet.
-        const img = tile.querySelector('img') as HTMLImageElement;
-        const box = tile.getBoundingClientRect();
-        return { tile: box.width / box.height, intrinsic: Number(img.getAttribute('width')) / Number(img.getAttribute('height')) };
-      }),
+  // The width/height attributes carry the manifest's intrinsic size and are
+  // there whether or not a lazy image has loaded yet.
+  const tileRatios = (page: Page, selector: string) =>
+    page.evaluate(
+      (sel) =>
+        [...document.querySelectorAll(sel)].map((tile) => {
+          const img = tile.querySelector('img') as HTMLImageElement;
+          const box = tile.getBoundingClientRect();
+          return { tile: box.width / box.height, intrinsic: Number(img.getAttribute('width')) / Number(img.getAttribute('height')) };
+        }),
+      selector,
     );
-    expect(ratios).toHaveLength(155);
+
+  test('Alison photos sit on one even 3:4 grid', async ({ page }) => {
+    await page.goto('/collections/alison');
+    const ratios = await tileRatios(page, '.photo-grid-portrait .photo-tile');
+    expect(ratios).toHaveLength(170);
+    // One shape throughout, whatever the photo underneath is.
+    expect(new Set(ratios.map((r) => r.tile.toFixed(2)))).toEqual(new Set([(3 / 4).toFixed(2)]));
+  });
+
+  test('Alison quote frames show whole frames, not crops', async ({ page }) => {
+    await page.goto('/collections/alison');
+    await page.getByRole('button', { name: 'Quotes', exact: true }).click();
+    // Each tile carries its own photo's aspect ratio, so the text burned into
+    // a story frame never gets cropped by the grid.
+    const ratios = await tileRatios(page, '.photo-grid-natural .photo-tile');
+    expect(ratios).toHaveLength(51);
     for (const r of ratios) expect(r.tile).toBeCloseTo(r.intrinsic, 1);
-    // The collection mixes 3:4 phone photos with taller 9:16 story frames.
-    expect(new Set(ratios.map((r) => r.tile.toFixed(2))).size).toBeGreaterThan(1);
+  });
+
+  test('the Alison quote switch swaps the two halves of the collection', async ({ page }) => {
+    await page.goto('/collections/alison');
+    const tiles = page.locator('[data-testid="photo-grid"] figure');
+    const photos = page.getByRole('button', { name: 'Photos', exact: true });
+    const quotes = page.getByRole('button', { name: 'Quotes', exact: true });
+    const track = page.locator('.segmented');
+
+    // Photos is the default: every tile is captioned with its month and year.
+    await expect(photos).toHaveAttribute('aria-current', 'true');
+    await expect(track).toHaveAttribute('data-mode', 'photos');
+    await expect(tiles).toHaveCount(170);
+    await expect(tiles.first().locator('figcaption')).toHaveText(/^[A-Z][a-z]+ \d{4}$/);
+
+    // Quotes shows only the frames whose text is on the image, uncaptioned.
+    await quotes.click();
+    await expect(quotes).toHaveAttribute('aria-current', 'true');
+    // The thumb slides to the far half of the track.
+    await expect(track).toHaveAttribute('data-mode', 'quotes');
+    await expect(tiles).toHaveCount(51);
+    await expect(page.locator('[data-testid="photo-grid"] figcaption')).toHaveCount(0);
+    // The transcribed quote stands in as the alt text and the lightbox caption.
+    await tiles.first().locator('button').click();
+    await expect(page.locator('dialog.lightbox .lightbox-caption')).toContainText('nice while it lasted');
+    await page.keyboard.press('Escape');
+
+    await photos.click();
+    await expect(tiles).toHaveCount(170);
   });
 
   test('theme toggle flips the colour scheme and sticks', async ({ page }) => {

@@ -17,13 +17,14 @@ export interface PhotoItem extends PictureData {
  * search deep links can land on a specific photo.
  *
  * `fit` decides how a tile frames its photo. `square` (the default) crops to
- * a uniform grid. `natural` gives every tile the photo's own aspect ratio, so
- * nothing is cropped; rows keep their left-to-right order and go ragged along
- * the bottom, which is the price of showing whole frames. Alison uses
- * `natural`: many of those photos carry a caption burned into the image that
- * a square crop cuts off.
+ * a uniform grid. `portrait` does the same at 3:4, for a set of upright
+ * photos that should read as one even surface. `natural` gives every tile the
+ * photo's own aspect ratio, so nothing is cropped; rows keep their
+ * left-to-right order and go ragged along the bottom, which is the price of
+ * showing whole frames. Alison's Quotes half uses `natural`, because the text
+ * on those images is pixels a crop would cut into.
  */
-export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md', fit = 'square' }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg'; fit?: 'square' | 'natural' }) {
+export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md', fit = 'square' }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg'; fit?: 'square' | 'portrait' | 'natural' }) {
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -52,7 +53,7 @@ export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45
   const current = open !== null ? items[open] : null;
   return (
     <>
-      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''} ${fit === 'natural' ? 'photo-grid-natural' : ''}`} data-testid="photo-grid">
+      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''} ${fit === 'natural' ? 'photo-grid-natural' : fit === 'portrait' ? 'photo-grid-portrait' : ''}`} data-testid="photo-grid">
         {items.map((item, i) => (
           <figure
             key={item.id}

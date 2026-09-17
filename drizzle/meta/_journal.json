@@ -92,6 +92,13 @@
       "when": 1788364305077,
       "tag": "0012_academic",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "6",
+      "when": 1789645685212,
+      "tag": "0013_gallery_quote",
+      "breakpoints": true
     }
   ]
 }

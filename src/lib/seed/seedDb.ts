@@ -229,7 +229,7 @@ const SEED_UNITS: SeedUnit[] = [
     tables: [schema.galleryItems],
     fingerprint: (seedDir) => fileFingerprint(seedDir, 'gallery.json'),
     seed(db, seedDir) {
-      const gallery = readJsonOptional<Array<{ title: string; description: string; imagePath: string; category: string }>>(seedDir, 'gallery.json') ?? [];
+      const gallery = readJsonOptional<Array<{ title: string; description: string; imagePath: string; category: string; quote?: string }>>(seedDir, 'gallery.json') ?? [];
       gallery.forEach((item, i) => {
         db.insert(schema.galleryItems).values({ ...item, sortOrder: i }).run();
       });
