@@ -703,9 +703,13 @@ a.card:hover {
   text-decoration: none;
 }
 
-/* Two-up switch (Alison: Photos / Quotes). The thumb slides under whichever
-   label you pick; nothing but the thumb moves, and only by transform. */
+/* Switch (Alison: Photos / Quotes, pennguytweets: order). The thumb slides
+   under whichever label you pick; nothing but the thumb moves, and only by
+   transform. Equal columns, so the thumb is one column wide and steps by its
+   own width. See src/components/main/Segmented.tsx. */
 .segmented {
+  --segmented-count: 2;
+  --segmented-index: 0;
   position: relative;
   display: inline-grid;
   grid-auto-flow: column;
@@ -719,13 +723,11 @@ a.card:hover {
 .segmented-thumb {
   position: absolute;
   inset: 3px auto 3px 3px;
-  width: calc(50% - 3px);
+  width: calc((100% - 6px) / var(--segmented-count));
   border-radius: 999px;
   background: var(--accent);
+  transform: translateX(calc(100% * var(--segmented-index)));
   transition: transform 0.25s ease;
-}
-.segmented[data-mode='quotes'] .segmented-thumb {
-  transform: translateX(100%);
 }
 .segmented-option {
   position: relative;

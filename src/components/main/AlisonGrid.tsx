@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import PhotoGrid, { type PhotoItem } from './PhotoGrid';
+import Segmented from './Segmented';
 
 /**
  * The Alison collection in two halves. Most of the run is plain pictures of
@@ -14,15 +15,15 @@ export default function AlisonGrid({ photos, quotes }: { photos: PhotoItem[]; qu
   const [mode, setMode] = useState<'photos' | 'quotes'>('photos');
   return (
     <>
-      <div className="segmented" role="group" aria-label="View" data-mode={mode}>
-        <span className="segmented-thumb" aria-hidden="true" />
-        <button type="button" className="segmented-option" aria-current={mode === 'photos' || undefined} onClick={() => setMode('photos')}>
-          Photos
-        </button>
-        <button type="button" className="segmented-option" aria-current={mode === 'quotes' || undefined} onClick={() => setMode('quotes')}>
-          Quotes
-        </button>
-      </div>
+      <Segmented
+        label="View"
+        value={mode}
+        onSelect={setMode}
+        options={[
+          { value: 'photos', label: 'Photos' },
+          { value: 'quotes', label: 'Quotes' },
+        ]}
+      />
       <PhotoGrid
         key={mode}
         items={mode === 'photos' ? photos : quotes}

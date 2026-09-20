@@ -101,8 +101,8 @@ describe('/api/content/[section]', () => {
 
   it('serves the scraped tweets newest first', async () => {
     const { items } = await (await getContent(req, params({ section: 'tweets' }))).json();
-    expect(items).toHaveLength(768);
-    expect(items[0].number).toBe(768);
+    expect(items).toHaveLength(789);
+    expect(items[0].number).toBe(800);
     expect(items[items.length - 1].number).toBe(1);
     expect(items[0].isSample).toBe(false);
     // The last few scraped tweets have no URL; everything still serves.

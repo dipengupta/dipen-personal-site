@@ -122,7 +122,8 @@ holds what the image says, verbatim. It is the whole feature:
 - a row with a `quote` is in the **Quotes** half of the page and renders with
   no month/year caption; a row without one is in the **Photos** half and keeps
   its caption. `app/(main)/collections/alison/page.tsx` splits on it and
-  `src/components/main/AlisonGrid.tsx` holds the switch and picks the `fit`.
+  `src/components/main/AlisonGrid.tsx` holds the switch (shared
+  `Segmented.tsx`) and picks the `fit`.
 - it becomes the tile's `alt` and the lightbox caption, so a screen reader can
   reach text that is otherwise only pixels.
 - `src/lib/search/searchContent.ts` indexes it, so the quotes are searchable.

@@ -187,7 +187,7 @@ test.describe('main site', () => {
 
     // Photos is the default: every tile is captioned with its month and year.
     await expect(photos).toHaveAttribute('aria-current', 'true');
-    await expect(track).toHaveAttribute('data-mode', 'photos');
+    await expect(track).toHaveAttribute('data-value', 'photos');
     await expect(tiles).toHaveCount(170);
     await expect(tiles.first().locator('figcaption')).toHaveText(/^[A-Z][a-z]+ \d{4}$/);
 
@@ -195,7 +195,7 @@ test.describe('main site', () => {
     await quotes.click();
     await expect(quotes).toHaveAttribute('aria-current', 'true');
     // The thumb slides to the far half of the track.
-    await expect(track).toHaveAttribute('data-mode', 'quotes');
+    await expect(track).toHaveAttribute('data-value', 'quotes');
     await expect(tiles).toHaveCount(51);
     await expect(page.locator('[data-testid="photo-grid"] figcaption')).toHaveCount(0);
     // The transcribed quote stands in as the alt text and the lightbox caption.
@@ -205,6 +205,31 @@ test.describe('main site', () => {
 
     await photos.click();
     await expect(tiles).toHaveCount(170);
+  });
+
+  test('the pennguytweets order switch reshuffles and goes back', async ({ page }) => {
+    await page.goto('/collections/pennguytweets');
+    const track = page.locator('.segmented');
+    const first = page.locator('[data-testid="tweet-feed"] li').first();
+
+    await expect(track).toHaveAttribute('data-value', 'latest');
+    // Each tweet's id is its own number, so identity survives a reorder.
+    const newest = await first.getAttribute('id');
+
+    await page.getByRole('button', { name: 'Shuffle', exact: true }).click();
+    await expect(track).toHaveAttribute('data-value', 'shuffle');
+    // A shuffle of 789 tweets that leaves the same one on top is a rounding
+    // error away from impossible, but retry once so this can never flake.
+    let shuffled = await first.getAttribute('id');
+    if (shuffled === newest) {
+      await page.getByRole('button', { name: 'Shuffle', exact: true }).click();
+      shuffled = await first.getAttribute('id');
+    }
+    expect(shuffled).not.toBe(newest);
+
+    await page.getByRole('button', { name: 'Newest first', exact: true }).click();
+    await expect(track).toHaveAttribute('data-value', 'latest');
+    await expect(first).toHaveAttribute('id', newest!);
   });
 
   test('theme toggle flips the colour scheme and sticks', async ({ page }) => {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import Segmented from './Segmented';
 
 export interface TweetCardData {
   number: number | null;
@@ -30,23 +31,23 @@ export default function TweetFeed({ tweets, handle }: { tweets: TweetCardData[];
   const visible = ordered.slice(0, shown);
   return (
     <>
-      <div className="pill-row" role="group" aria-label="Order">
-        <button type="button" className="pill" aria-current={mode === 'latest' || undefined} onClick={() => setMode('latest')}>
-          Newest first
-        </button>
-        <button
-          type="button"
-          className="pill"
-          aria-current={mode === 'shuffle' || undefined}
-          onClick={() => {
-            setMode('shuffle');
+      <Segmented
+        label="Order"
+        value={mode}
+        // A click on Shuffle always reshuffles, including when it is already
+        // the side the thumb is on.
+        onSelect={(next) => {
+          setMode(next);
+          if (next === 'shuffle') {
             setSeed((s) => s + 1);
             setShown(PAGE);
-          }}
-        >
-          Shuffle
-        </button>
-      </div>
+          }
+        }}
+        options={[
+          { value: 'latest', label: 'Newest first' },
+          { value: 'shuffle', label: 'Shuffle' },
+        ]}
+      />
       <ol className="tweets" data-testid="tweet-feed">
         {visible.map((t) => (
           <li key={t.number ?? t.text} className="tweet" id={t.number != null ? `tweet-${t.number}` : undefined}>

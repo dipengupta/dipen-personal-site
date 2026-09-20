@@ -20,5 +20,13 @@ npm run seed && npm test
 git add src/data/seed/tweets.json && git commit -m "Add pennguytweets #769-770"
 ```
 
-Duplicates (by number or text) are skipped. The iPod's Settings has a shuffle
-toggle; the main site and iTunes show newest first with a shuffle button.
+Duplicates (by number or text) are skipped, and the rows are re-sorted by
+number, so a batch with gaps or out of order is fine. Two counts are
+hardcoded and fail until updated in the same change:
+`tests/integration/seed.test.ts` (total rows) and
+`tests/integration/routes.test.ts` (total rows, and the newest number).
+
+The iPod's Settings has a shuffle toggle; iTunes has a shuffle button. The
+main site has a Newest first / Shuffle switch
+(`src/components/main/Segmented.tsx`, shared with the Alison page), where a
+click on Shuffle reshuffles even when it is already selected.
