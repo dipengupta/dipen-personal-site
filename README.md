@@ -12,11 +12,15 @@ database:
 All three read the same SQLite file, so a new recipe, photo, tweet or video
 shows up everywhere at once. Media (photos, videos) lives outside the repo.
 
-The homepage cycles through all profile photos on desktop and mobile.
+The homepage cycles through all profile photos every eight seconds on desktop
+and mobile, including after a swipe or tap. Hovering leaves it running;
+keyboard focus and holding a drag pause it. Reduced motion changes photos
+without a sliding animation.
 Both orientations appear in full beside the intro on wide screens, directly
 on the page background. On phones the intro sits below the photo, keeping
 faces clear. Swipe left/right, drag with a mouse, or focus the photo area and
-use arrow keys to browse; there are no visible controls or counters.
+use arrow keys to browse. Three subtle dots below the photo hint at more
+pictures, without counting them or adding buttons.
 Photos follow the swipe as it happens and settle on release; short drags
 return to the same photo, and vertical swipes still scroll the page.
 About > Photos (`/about/photos`) shows the same collection in
@@ -24,6 +28,9 @@ a mosaic of whole frames, with varied row sizes and a keyboard-accessible
 lightbox. The homepage order and gallery composition shuffle on each server
 page load. The iPod and iTunes Photos sections keep seed order and reveal
 captions only when a photo is flipped.
+
+The main site's pennguytweets archive is linked in the footer's Collections
+column, with no header, mobile menu, or homepage Explore entry.
 
 ## Quickstart
 

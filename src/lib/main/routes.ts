@@ -9,6 +9,7 @@ export interface PageDef {
   href: string;
   label: string;
   blurb: string;
+  footerOnly?: boolean;
 }
 
 export interface SectionDef {
@@ -37,7 +38,7 @@ export const SECTIONS: SectionDef[] = [
       { href: '/collections/mugs-vinyls-and-magnets', label: 'Mugs, Vinyls and Magnets', blurb: 'The mug shelf, the record shelf and the fridge door.' },
       { href: '/collections/recipes', label: 'Recipes and Spice Blends', blurb: 'Food, baking, drinks, tips, and the blends to keep on hand.' },
       { href: '/collections/alison', label: 'Alison', blurb: 'A photo collection, oldest to newest.' },
-      { href: '/collections/pennguytweets', label: 'pennguytweets', blurb: 'The archive, numbered, newest first.' },
+      { href: '/collections/pennguytweets', label: 'pennguytweets', blurb: 'The archive, numbered, newest first.', footerOnly: true },
     ],
   },
   {
@@ -62,6 +63,11 @@ export const SECTIONS: SectionDef[] = [
 ];
 
 export const ALL_PAGES: PageDef[] = SECTIONS.flatMap((s) => s.pages);
+
+/** Header, mobile menu and Explore omit pages linked only from the footer. */
+export const NAV_SECTIONS: SectionDef[] = SECTIONS.map((s) => ({
+  ...s, pages: s.pages.filter((p) => !p.footerOnly),
+}));
 
 /** Where a section's top-level nav item points: its first page. */
 export function sectionHref(section: SectionDef): string {

@@ -47,6 +47,10 @@ dragging with a mouse, or focusing the photo area and using arrow keys.
 For a motion check, disable reduced motion and verify that a photo follows
 your finger before release, a short drag returns to the same photo, and
 vertical swipes still scroll the page. Both neighbors preload automatically.
+Leave the pointer over a photo and check that it advances after eight seconds.
+Swiping or tapping restarts that interval; keyboard focus pauses it until
+blur. With reduced motion enabled, photos still cycle without sliding.
+The fixed three-dot hint should remain below both photo orientations.
 About > Photos varies both the order and the
 desktop mosaic's row sizes on each load, showing full frames throughout.
 Profile-photo titles and descriptions appear on the backs of the iPod and

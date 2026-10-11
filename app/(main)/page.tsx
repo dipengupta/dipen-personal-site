@@ -6,7 +6,7 @@ import ViewCards from '@/components/main/ViewCards';
 import { HOME } from '@/content/site';
 import { getSection } from '@/lib/content/queries';
 import { shufflePhotos } from '@/lib/main/photos';
-import { SECTIONS, sectionHref } from '@/lib/main/routes';
+import { NAV_SECTIONS, sectionHref } from '@/lib/main/routes';
 import { siteConfigFromRequest } from '@/lib/site/request';
 
 export const dynamic = 'force-dynamic';
@@ -60,7 +60,7 @@ export default async function HomePage() {
           <h2 id="explore">{HOME.exploreHeading}</h2>
         </div>
         <div className="index">
-          {SECTIONS.map((s) => (
+          {NAV_SECTIONS.map((s) => (
             <div key={s.id} className="index-row">
               <Link href={sectionHref(s)} className="index-label">
                 {s.label}

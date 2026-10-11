@@ -30,7 +30,6 @@ export default function Hero({ images, intervalMs = 8000, children }: {
   const [index, setIndex] = useState(0);
   const [reduced, setReduced] = useState(false);
   const [dragging, setDragging] = useState(false);
-  const [hovered, setHovered] = useState(false);
   const [focused, setFocused] = useState(false);
   const stageRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
@@ -38,7 +37,6 @@ export default function Hero({ images, intervalMs = 8000, children }: {
   const animation = useRef<Animation | null>(null);
   const offset = useRef(0);
   const paintFrame = useRef(0);
-  const pausedUntil = useRef(0);
 
   const paint = useCallback((x: number, immediate = false) => {
     offset.current = x;
@@ -85,11 +83,10 @@ export default function Hero({ images, intervalMs = 8000, children }: {
     }).catch(() => { /* A new gesture can interrupt the settling animation. */ });
   }, [images.length, paint, reduced]);
 
-  const go = useCallback((delta: number, manual = true) => {
+  const go = useCallback((delta: number) => {
     if (images.length < 2 || drag.current || animation.current) return;
-    if (manual) pausedUntil.current = Date.now() + intervalMs * 2;
     settle(delta);
-  }, [images.length, intervalMs, settle]);
+  }, [images.length, settle]);
 
   useLayoutEffect(() => {
     animation.current?.cancel();
@@ -106,13 +103,15 @@ export default function Hero({ images, intervalMs = 8000, children }: {
   }, []);
 
   useEffect(() => {
-    if (reduced || hovered || focused || images.length < 2) return;
-    let timer: ReturnType<typeof setInterval> | undefined;
-    const stop = () => timer && clearInterval(timer);
+    // Each photo and completed gesture gets a full viewing interval.
+    if (dragging || focused || images.length < 2) return;
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const stop = () => clearTimeout(timer);
     const start = () => {
       stop();
-      timer = setInterval(() => {
-        if (Date.now() >= pausedUntil.current) go(1, false);
+      timer = setTimeout(() => {
+        go(1);
+        start();
       }, intervalMs);
     };
     const onVisibility = () => (document.hidden ? stop() : start());
@@ -122,7 +121,7 @@ export default function Hero({ images, intervalMs = 8000, children }: {
       stop();
       document.removeEventListener('visibilitychange', onVisibility);
     };
-  }, [go, images.length, intervalMs, reduced, hovered, focused]);
+  }, [go, index, images.length, intervalMs, dragging, focused]);
 
   useEffect(() => {
     // Decode both neighbors ahead of a swipe, including the backwards frame.
@@ -156,7 +155,6 @@ export default function Hero({ images, intervalMs = 8000, children }: {
     animation.current = null;
     paint(current, true);
     drag.current = { id: e.pointerId, x: e.clientX, y: e.clientY, base: current, width: e.currentTarget.getBoundingClientRect().width, lastX: e.clientX, lastTime: e.timeStamp, velocity: 0, axis: null };
-    pausedUntil.current = Date.now() + intervalMs * 2;
     e.currentTarget.setPointerCapture(e.pointerId);
     setDragging(true);
   };
@@ -204,13 +202,12 @@ export default function Hero({ images, intervalMs = 8000, children }: {
       className={`hero ${dragging ? 'is-dragging' : ''}`}
       data-testid="hero"
       data-orientation={images[index].width < images[index].height ? 'portrait' : 'landscape'}
-      onPointerEnter={(e) => e.pointerType === 'mouse' && setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
-      onFocusCapture={() => setFocused(true)}
+      onFocusCapture={(e) => setFocused(e.target.matches(':focus-visible'))}
       onBlurCapture={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setFocused(false); }}
       onKeyDown={(e) => {
         if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
           e.preventDefault();
+          setFocused(true);
           go(e.key === 'ArrowRight' ? 1 : -1);
         }
       }}
@@ -218,15 +215,18 @@ export default function Hero({ images, intervalMs = 8000, children }: {
       role={images.length > 1 ? 'group' : undefined}
       aria-label={images.length > 1 ? 'Photos; swipe or use the arrow keys' : undefined}
     >
-      <div ref={stageRef} className="hero-stage" aria-live="off" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}>
-        <div ref={trackRef} className="hero-track">
-          {panes.map(({ i, position }) => (
-            <div key={images.length === 2 ? `${images[i].src}-${position}` : images[i].src} className={`hero-slide ${position === 0 ? 'is-current' : ''}`} style={{ transform: `translate3d(${position * 100}%, 0, 0)` }} aria-hidden={position !== 0}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={images[i].src} srcSet={images[i].srcSet} sizes="(min-width: 1160px) 560px, (min-width: 900px) 48vw, 90vw" width={images[i].width} height={images[i].height} alt={images[i].alt} loading="eager" decoding="async" fetchPriority={position === 0 ? 'high' : 'low'} className="hero-img" draggable={false} />
-            </div>
-          ))}
+      <div className="hero-photos">
+        <div ref={stageRef} className="hero-stage" aria-live="off" onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={cancelDrag} onLostPointerCapture={cancelDrag}>
+          <div ref={trackRef} className="hero-track">
+            {panes.map(({ i, position }) => (
+              <div key={images.length === 2 ? `${images[i].src}-${position}` : images[i].src} className={`hero-slide ${position === 0 ? 'is-current' : ''}`} style={{ transform: `translate3d(${position * 100}%, 0, 0)` }} aria-hidden={position !== 0}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={images[i].src} srcSet={images[i].srcSet} sizes="(min-width: 1160px) 560px, (min-width: 900px) 48vw, 90vw" width={images[i].width} height={images[i].height} alt={images[i].alt} loading="eager" decoding="async" fetchPriority={position === 0 ? 'high' : 'low'} className="hero-img" draggable={false} />
+              </div>
+            ))}
+          </div>
         </div>
+        {images.length > 1 && <div className="hero-hint" aria-hidden="true"><span /><span /><span /></div>}
       </div>
       <div className="hero-content">{children}</div>
     </div>

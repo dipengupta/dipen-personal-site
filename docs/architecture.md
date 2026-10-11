@@ -56,7 +56,10 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
   Sections have no landing page (a top-level nav item links to its first page
   and opens the dropdown); `REDIRECTS` keeps the section and retired URLs
   working. Header, mobile sheet, footer, sitemap and the home page's Explore
-  cards all render from the table.
+  cards all render from the table. Pages marked `footerOnly` stay in
+  `SECTIONS` and `ALL_PAGES` for the footer and sitemap; `NAV_SECTIONS`
+  excludes them from the header, mobile menu and Explore. The pennguytweets
+  archive uses this flag.
 - **Pages** are server components calling `src/lib/content/queries.ts`
   (`force-dynamic`: the DB is local and reads are sub-millisecond, and the
   live fetchers stay in the request path). Client components are limited to
@@ -79,10 +82,13 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
   to choose a photo, with a 320 ms settling animation (240 ms for a return).
   A new gesture can interrupt that animation at its current position. It has
   swipe, mouse drag, and keyboard navigation without visible buttons or a
-  counter; it rests while hovered or focused and respects reduced motion and
-  hidden tabs. Pointer capture keeps a drag active outside the photo area;
+  counter. A fixed three-dot hint sits below the photograph; it indicates
+  more photos without acting as pagination. A fresh eight-second timeout
+  starts on each photo and after a gesture. Hover and pointer focus do not
+  stop cycling; keyboard focus, an active drag and hidden tabs do. Pointer
+  capture keeps a drag active outside the photo area;
   `touch-action: pan-y` and gesture direction preserve vertical page scrolling.
-  Reduced motion disables timed cycling and release animations. Resizing
+  Reduced motion keeps timed cycling but removes slide animations. Resizing
   clears an unfinished gesture and recenters the track.
   `shufflePhotos` runs once on the server per page load, so hydration uses
   the same order. `/about/photos` also randomizes row sizes with

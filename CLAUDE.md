@@ -86,13 +86,19 @@ docker compose up --build
 - Tweets must all have a date (`posted_at` NOT NULL; the seeder throws).
 - Sections have no landing pages; add retired URLs to `REDIRECTS` in
   `src/lib/main/routes.ts` rather than leaving 404s behind.
+  `NAV_SECTIONS` supplies the header, mobile menu and Explore; `SECTIONS`
+  keeps `footerOnly` pages such as pennguytweets in the footer and sitemap.
 - Live feed refreshes never block a request (`refreshInBackground`).
 - Profile photos (`gallery.json`, category `profile`) appear in the homepage
   slideshow at every viewport, `/about/photos`, and the device Photos sections.
   `shufflePhotos` runs on the server for the main site only; keep photo ids
   stable for search links. Both photo orientations sit beside the intro on the
   page background on desktop, with swipe/drag and keyboard navigation and no
-  visible controls or counter. Keep hero dragging off React's render path:
+  visible buttons or counter, plus three subtle hint dots below the photo.
+  Timed cycling resumes eight seconds after a swipe or tap; hover never
+  pauses it. Keyboard focus, active drags and hidden tabs pause it, while
+  reduced motion removes slide animations without stopping cycling.
+  Keep hero dragging off React's render path:
   the three-frame track follows the pointer, with both neighbors decoded;
   release settles with the Web Animations API and respects reduced motion.
   The Photos page uses uncropped mosaic rows

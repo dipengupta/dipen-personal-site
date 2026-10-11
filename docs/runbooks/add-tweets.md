@@ -2,6 +2,9 @@
 
 The archive is `src/data/seed/tweets.json` (the account's own `N/x`
 numbering). Every row needs a date; the seeder refuses dateless tweets.
+On the main site its navigation link lives in the footer's Collections
+column. The route table marks it `footerOnly` so it does not appear in the
+header, mobile menu or homepage Explore index.
 
 ```bash
 # one tweet

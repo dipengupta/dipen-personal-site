@@ -100,6 +100,12 @@ test.describe('main site', () => {
     await expect(current).toHaveAttribute('src', initial);
     await expect(hero.getByRole('button')).toHaveCount(0);
     await expect(hero.locator('.hero-controls, .hero-count')).toHaveCount(0);
+    const hint = hero.locator('.hero-hint');
+    await expect(hint).toBeVisible();
+    await expect(hint.locator('span')).toHaveCount(3);
+    await expect(hint).toHaveAttribute('aria-hidden', 'true');
+    const stageBox = (await hero.locator('.hero-stage').boundingBox())!;
+    expect((await hint.boundingBox())!.y).toBeGreaterThanOrEqual(stageBox.y + stageBox.height - 1);
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
     await expect(page.locator('.index-row')).toHaveCount(4);
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);
@@ -145,7 +151,59 @@ test.describe('main site', () => {
     await expect(hero.getByRole('button', { name: /Pause|Play slideshow/ })).toHaveCount(0);
   });
 
-  test('the slideshow advances automatically and rests while focused', async ({ page }) => {
+  test('the slideshow keeps cycling with the pointer over the photos', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.clock.install();
+    await page.goto('/');
+    const hero = page.getByTestId('hero');
+    const box = (await hero.locator('.hero-stage').boundingBox())!;
+    await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+    const current = hero.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', initial);
+    const second = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', second);
+  });
+
+  test('the slideshow resumes after a swipe or tap without moving a held photo', async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.clock.install();
+    await page.goto('/');
+    const current = page.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    const gesture = await beginHeroDrag(page, isMobile);
+    await gesture.move(-gesture.box.width * 0.3);
+    await page.clock.fastForward(16000);
+    await expect(current).toHaveAttribute('src', initial);
+    await gesture.release();
+    await expect(current).not.toHaveAttribute('src', initial);
+    const swiped = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(7999);
+    await expect(current).toHaveAttribute('src', swiped);
+    await page.clock.fastForward(1);
+    await expect(current).not.toHaveAttribute('src', swiped);
+    const tap = await beginHeroDrag(page, isMobile);
+    await tap.release();
+    const tapped = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', tapped);
+  });
+
+  test('reduced motion cycles photos without a slide animation', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.clock.install();
+    await page.goto('/');
+    const current = page.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', initial);
+    expect(await page.locator('.hero-track').evaluate((el) => el.getAnimations().length)).toBe(0);
+    expect(await heroOffset(page)).toBe(0);
+  });
+
+  test('the slideshow rests while focused with the keyboard and resumes on blur', async ({ page }) => {
     await page.emulateMedia({ reducedMotion: 'no-preference' });
     await page.clock.install();
     await page.goto('/');
@@ -160,6 +218,28 @@ test.describe('main site', () => {
     await expect(current).toHaveAttribute('src', second);
     await page.keyboard.press('ArrowRight');
     await expect(current).not.toHaveAttribute('src', second);
+    const selected = (await current.getAttribute('src'))!;
+    await page.keyboard.press('Tab');
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', selected);
+  });
+
+  test('pennguytweets is linked from the footer, with no header or Explore mention', async ({ page, isMobile }) => {
+    await page.goto('/');
+    const archive = 'a[href="/collections/pennguytweets"]';
+    await expect(page.locator('header').locator(archive)).toHaveCount(0);
+    await expect(page.locator('main').locator(archive)).toHaveCount(0);
+    await expect(page.locator('main')).not.toContainText('pennguytweets');
+    if (isMobile) {
+      await page.locator('summary.menu-toggle').click();
+      await expect(page.locator('#mobile-nav')).toBeVisible();
+      await expect(page.locator('#mobile-nav').locator(archive)).toHaveCount(0);
+      await page.locator('summary.menu-toggle').click();
+    }
+    const link = page.locator('footer').locator(archive);
+    await expect(link).toHaveCount(1);
+    await link.click();
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('pennguytweets');
   });
 
   test('page loads start with randomized homepage photos', async ({ page }) => {

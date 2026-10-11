@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { searchResultHref } from '@/lib/main/searchTargets';
-import { ALL_PAGES, REDIRECTS, SECTIONS } from '@/lib/main/routes';
+import { ALL_PAGES, NAV_SECTIONS, REDIRECTS, SECTIONS } from '@/lib/main/routes';
 import { slugify } from '@/lib/main/slug';
 
 describe('slugify', () => {
@@ -53,6 +53,14 @@ describe('searchResultHref', () => {
 });
 
 describe('main-site route table', () => {
+  it('keeps the tweet archive in the footer and sitemap without promoting it in navigation', () => {
+    const archive = '/collections/pennguytweets';
+    expect(ALL_PAGES.map((p) => p.href)).toContain(archive);
+    expect(SECTIONS.find((s) => s.id === 'collections')!.pages.map((p) => p.href)).toContain(archive);
+    expect(NAV_SECTIONS.flatMap((s) => s.pages).map((p) => p.href)).not.toContain(archive);
+    expect(NAV_SECTIONS.map((s) => s.id)).toEqual(SECTIONS.map((s) => s.id));
+  });
+
   it('redirects old and section URLs to real pages', () => {
     const known = new Set(ALL_PAGES.map((p) => p.href));
     for (const r of REDIRECTS) {

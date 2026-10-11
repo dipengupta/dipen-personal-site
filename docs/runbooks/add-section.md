@@ -16,6 +16,9 @@ The data spine is shared, so a section is added once and surfaced per view.
 5. **Main site**: a page under `app/(main)/<section>/<page>/`, an entry in
    `src/lib/main/routes.ts` (nav, footer, sitemap, home Explore cards) and
    copy in `src/content/`. There are no section landing pages.
+   Mark a page `footerOnly: true` when its navigation link should appear only
+   in the footer, as with pennguytweets. The header and Explore use
+   `NAV_SECTIONS`; the footer and sitemap keep the full route table.
 6. **iPod**: builder in `src/lib/menu/dataSources.ts` + node in
    `src/lib/menu/tree.ts`. **iTunes**: loader in `src/lib/itunes/loaders.ts` +
    row in `src/lib/itunes/catalog.ts`.

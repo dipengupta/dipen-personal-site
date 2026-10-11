@@ -2,7 +2,7 @@ import { Instrument_Sans, Instrument_Serif } from 'next/font/google';
 import FocusHash from '@/components/main/FocusHash';
 import SiteFooter from '@/components/main/SiteFooter';
 import SiteHeader from '@/components/main/SiteHeader';
-import { SECTIONS } from '@/lib/main/routes';
+import { NAV_SECTIONS } from '@/lib/main/routes';
 import { siteConfigFromRequest } from '@/lib/site/request';
 import './main.css';
 
@@ -17,7 +17,7 @@ export default async function MainLayout({ children }: Readonly<{ children: Reac
   const siteConfig = await siteConfigFromRequest();
   return (
     <div className={`site ${sans.variable} ${serif.variable}`} data-testid="main-site">
-      <SiteHeader sections={SECTIONS} />
+      <SiteHeader sections={NAV_SECTIONS} />
       <main className="main">
         <div className="container">{children}</div>
       </main>
