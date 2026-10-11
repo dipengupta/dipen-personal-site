@@ -44,6 +44,9 @@ orientations are included automatically in the homepage slideshow and
 `/about/photos`. The main site shuffles at server render time, while the
 device views keep seed order. Browse the homepage photos by swiping left/right,
 dragging with a mouse, or focusing the photo area and using arrow keys.
+For a motion check, disable reduced motion and verify that a photo follows
+your finger before release, a short drag returns to the same photo, and
+vertical swipes still scroll the page. Both neighbors preload automatically.
 About > Photos varies both the order and the
 desktop mosaic's row sizes on each load, showing full frames throughout.
 Profile-photo titles and descriptions appear on the backs of the iPod and

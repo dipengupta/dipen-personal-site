@@ -48,7 +48,7 @@ docker compose up --build
   plain `<a>` elements.
 - **Never hardcode secrets.** Env vars via `.env` (gitignored); document new
   ones in `.env.example` and README. There are no API keys today.
-- **Animate transforms/opacity only** (hero crossfade, mosaic, iPod screen).
+- **Animate transforms/opacity only** (hero swipe, mosaic, iPod screen).
 - **Node 22 everywhere** (`.nvmrc`, Dockerfile): better-sqlite3 and sharp ABIs.
 
 ## Layout of interest
@@ -92,6 +92,9 @@ docker compose up --build
   `shufflePhotos` runs on the server for the main site only; keep photo ids
   stable for search links. Both photo orientations sit beside the intro on the
   page background on desktop, with swipe/drag and keyboard navigation and no
-  visible controls or counter; the Photos page uses uncropped mosaic rows
+  visible controls or counter. Keep hero dragging off React's render path:
+  the three-frame track follows the pointer, with both neighbors decoded;
+  release settles with the Web Animations API and respects reduced motion.
+  The Photos page uses uncropped mosaic rows
   with varied density and the shared lightbox. Device photo loaders set
   `captionOnBack`; title and description appear only after flipping the cover.

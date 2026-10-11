@@ -3,6 +3,39 @@ import gallerySeed from '../src/data/seed/gallery.json';
 
 const profilePhotos = gallerySeed.filter((p) => p.category === 'profile');
 
+async function beginHeroDrag(page: Page, touch: boolean, startFraction = 0.75) {
+  const stage = page.getByTestId('hero').locator('.hero-stage');
+  await stage.scrollIntoViewIfNeeded();
+  const box = (await stage.boundingBox())!;
+  const x = box.x + box.width * startFraction;
+  const y = box.y + box.height / 2;
+  const session = touch ? await page.context().newCDPSession(page) : null;
+  if (session) await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y }] });
+  else {
+    await page.mouse.move(x, y);
+    await page.mouse.down();
+  }
+  return {
+    box,
+    x,
+    y,
+    move: async (dx: number, dy = 0) => {
+      if (session) await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x + dx, y: y + dy }] });
+      else await page.mouse.move(x + dx, y + dy, { steps: 6 });
+    },
+    release: async () => {
+      if (session) {
+        await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+        await session.detach();
+      } else await page.mouse.up();
+    },
+  };
+}
+
+function heroOffset(page: Page) {
+  return page.locator('.hero-track').evaluate((el) => new DOMMatrixReadOnly(getComputedStyle(el).transform).m41);
+}
+
 async function swipeHero(page: Page, direction: 'left' | 'right', touch: boolean) {
   const stage = page.getByTestId('hero').locator('.hero-stage');
   await stage.scrollIntoViewIfNeeded();
@@ -142,6 +175,78 @@ test.describe('main site', () => {
       if (load < 4) await page.reload();
     }
     expect(starts.size).toBeGreaterThan(1);
+  });
+
+  test('photos follow the swipe before release and settle without moving the intro', async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/');
+    const hero = page.getByTestId('hero');
+    const current = hero.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    const intro = await hero.locator('.hero-content').boundingBox();
+    await expect(hero.locator('.hero-img')).toHaveCount(3);
+    const gesture = await beginHeroDrag(page, isMobile);
+    const distance = -gesture.box.width * 0.3;
+    await gesture.move(distance);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(distance, 0);
+    await expect(current).toHaveAttribute('src', initial);
+    expect(await hero.locator('.hero-content').boundingBox()).toEqual(intro);
+    await gesture.release();
+    await expect(current).not.toHaveAttribute('src', initial);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(0, 0);
+    expect(await hero.locator('.hero-content').boundingBox()).toEqual(intro);
+  });
+
+  test('a short drag returns smoothly to the same photo', async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/');
+    const current = page.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    const gesture = await beginHeroDrag(page, isMobile);
+    await gesture.move(-10);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(-10, 0);
+    await gesture.release();
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(0, 0);
+    await expect(current).toHaveAttribute('src', initial);
+  });
+
+  test('a new drag can reverse a settling swipe from its current position', async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/');
+    const current = page.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    const first = await beginHeroDrag(page, isMobile);
+    await first.move(-first.box.width * 0.3);
+    await first.release();
+    // Freeze a partly completed animation to test interruption deterministically.
+    await page.locator('.hero-track').evaluate((el) => {
+      const animation = el.getAnimations()[0];
+      animation.pause();
+      animation.currentTime = 80;
+    });
+    const before = await heroOffset(page);
+    const second = await beginHeroDrag(page, isMobile, 0.1);
+    expect(await heroOffset(page)).toBeCloseTo(before, 0);
+    await second.move(-before);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(0, 0);
+    await second.release();
+    await expect(current).toHaveAttribute('src', initial);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(0, 0);
+  });
+
+  test('vertical touch swipes scroll the page without changing the photo', async ({ page, isMobile }) => {
+    test.skip(!isMobile, 'touch scrolling only');
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.goto('/');
+    const current = page.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    const gesture = await beginHeroDrag(page, true);
+    const scrollBefore = await page.evaluate(() => scrollY);
+    for (let step = 1; step <= 6; step++) await gesture.move(0, -step * 25);
+    await gesture.release();
+    await expect.poll(() => page.evaluate(() => scrollY)).toBeGreaterThan(scrollBefore + 30);
+    await expect(current).toHaveAttribute('src', initial);
+    await expect.poll(() => heroOffset(page)).toBeCloseTo(0, 0);
   });
 
   test('About photos form a fresh mosaic, preserve whole frames, and open in a lightbox', async ({ page, isMobile }) => {

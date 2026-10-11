@@ -60,7 +60,7 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 - **Pages** are server components calling `src/lib/content/queries.ts`
   (`force-dynamic`: the DB is local and reads are sub-millisecond, and the
   live fetchers stay in the request path). Client components are limited to
-  what needs state: hero crossfade, photo lightbox, YouTube click-to-embed,
+  what needs state: hero swipe, photo lightbox, YouTube click-to-embed,
   tweet feed, search dialog, theme toggle, header menu, hash focus.
 - **Copy** is in `src/content/` (plain strings; no em-dashes/emoji, enforced
   by `tests/unit/mainCopy.test.ts`). Quoted content (articles, captions,
@@ -72,11 +72,18 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
   slideshow on every viewport. Both orientations sit beside the intro on
   desktop, directly on the page background without an outer panel. On phones
   the intro sits below the photo so faces stay clear. Both
-  orientations use `object-fit: contain`. The slideshow preloads the next
-  image and retains the previous frame during its opacity crossfade. It has
+  orientations use `object-fit: contain`. The slideshow preloads and decodes
+  the current photo and both neighbors in a clipped three-pane track. Pointer
+  movement updates one transform per animation frame, without React renders
+  or layout measurements on each move. Release uses distance and velocity
+  to choose a photo, with a 320 ms settling animation (240 ms for a return).
+  A new gesture can interrupt that animation at its current position. It has
   swipe, mouse drag, and keyboard navigation without visible buttons or a
   counter; it rests while hovered or focused and respects reduced motion and
-  hidden tabs. Pointer capture keeps a drag active outside the photo area.
+  hidden tabs. Pointer capture keeps a drag active outside the photo area;
+  `touch-action: pan-y` and gesture direction preserve vertical page scrolling.
+  Reduced motion disables timed cycling and release animations. Resizing
+  clears an unfinished gesture and recenters the track.
   `shufflePhotos` runs once on the server per page load, so hydration uses
   the same order. `/about/photos` also randomizes row sizes with
   `photoMosaicRows`: image aspect ratios set proportional widths in justified
