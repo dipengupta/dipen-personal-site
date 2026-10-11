@@ -22,9 +22,10 @@ export interface PhotoItem extends PictureData {
  * photo's own aspect ratio, so nothing is cropped; rows keep their
  * left-to-right order and go ragged along the bottom, which is the price of
  * showing whole frames. Alison's Quotes half uses `natural`, because the text
- * on those images is pixels a crop would cut into.
+ * on those images is pixels a crop would cut into. `mosaic` justifies whole
+ * frames into rows of varying density, with captions on hover or focus.
  */
-export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md', fit = 'square' }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg'; fit?: 'square' | 'portrait' | 'natural' }) {
+export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45vw', size = 'md', fit = 'square', rowLengths = [items.length] }: { items: PhotoItem[]; sizes?: string; size?: 'sm' | 'md' | 'lg'; fit?: 'square' | 'portrait' | 'natural' | 'mosaic'; rowLengths?: number[] }) {
   const [open, setOpen] = useState<number | null>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
 
@@ -51,28 +52,35 @@ export default function PhotoGrid({ items, sizes = '(min-width: 900px) 220px, 45
   }, [open, step]);
 
   const current = open !== null ? items[open] : null;
+  const tile = (item: PhotoItem, i: number) => (
+    <figure
+      key={item.id}
+      id={item.id}
+      className="photo-tile"
+      data-orientation={item.width < item.height ? 'portrait' : 'landscape'}
+      style={fit === 'natural' || fit === 'mosaic' ? { margin: 0, aspectRatio: `${item.width} / ${item.height}`, ...(fit === 'mosaic' ? { flex: `${item.width / item.height} 1 0px` } : {}) } : { margin: 0 }}
+    >
+      <button type="button" onClick={() => setOpen(i)} aria-label={`Open ${item.caption ?? item.alt}`} style={{ all: 'unset', display: 'block', width: '100%', height: '100%', cursor: 'zoom-in' }}>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img src={item.src} srcSet={item.srcSet} sizes={sizes} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" style={blurStyle(item.blur)} />
+      </button>
+      {item.caption && (
+        <figcaption>
+          {item.caption}
+          {item.sub && <span className="muted"> {item.sub}</span>}
+        </figcaption>
+      )}
+    </figure>
+  );
+  let start = 0;
   return (
     <>
-      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''} ${fit === 'natural' ? 'photo-grid-natural' : fit === 'portrait' ? 'photo-grid-portrait' : ''}`} data-testid="photo-grid">
-        {items.map((item, i) => (
-          <figure
-            key={item.id}
-            id={item.id}
-            className="photo-tile"
-            style={fit === 'natural' && item.width && item.height ? { margin: 0, aspectRatio: `${item.width} / ${item.height}` } : { margin: 0 }}
-          >
-            <button type="button" onClick={() => setOpen(i)} aria-label={`Open ${item.caption ?? item.alt}`} style={{ all: 'unset', display: 'block', width: '100%', height: '100%', cursor: 'zoom-in' }}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={item.src} srcSet={item.srcSet} sizes={sizes} width={item.width} height={item.height} alt={item.alt} loading="lazy" decoding="async" style={blurStyle(item.blur)} />
-            </button>
-            {item.caption && (
-              <figcaption>
-                {item.caption}
-                {item.sub && <span className="muted"> {item.sub}</span>}
-              </figcaption>
-            )}
-          </figure>
-        ))}
+      <div className={`photo-grid ${size === 'lg' ? 'photo-grid-lg' : size === 'sm' ? 'photo-grid-sm' : ''} ${fit !== 'square' ? `photo-grid-${fit}` : ''}`} data-testid="photo-grid">
+        {fit === 'mosaic' ? rowLengths.map((count, row) => {
+          const offset = start;
+          start += count;
+          return <div key={row} className="photo-mosaic-row">{items.slice(offset, start).map((item, i) => tile(item, offset + i))}</div>;
+        }) : items.map(tile)}
       </div>
       <dialog ref={dialogRef} className="lightbox" onClose={() => setOpen(null)} onClick={(e) => e.target === dialogRef.current && setOpen(null)} aria-label="Photo">
         {current && (

@@ -4,6 +4,7 @@ import { GET as getArticles } from '@/../app/api/articles/route';
 import { GET as getContent } from '@/../app/api/content/[section]/route';
 import { GET as getYoutube } from '@/../app/api/youtube/route';
 import { injectAppDb, makeTestDb } from './helpers';
+import gallerySeed from '@/data/seed/gallery.json';
 
 const params = <T extends object>(value: T) => ({ params: Promise.resolve(value) });
 const req = new Request('http://test.local/');
@@ -26,7 +27,10 @@ describe('/api/content/[section]', () => {
 
   it('splits profile photos and kitchen wins out of the gallery items', async () => {
     const photos = await (await getContent(req, params({ section: 'photos' }))).json();
-    expect(photos.items.length).toBeGreaterThanOrEqual(10);
+    const profileSeed = gallerySeed.filter((p) => p.category === 'profile');
+    expect(photos.items.map((p: { imagePath: string }) => p.imagePath)).toEqual(profileSeed.map((p) => p.imagePath));
+    expect(photos.items).toHaveLength(37);
+    expect(photos.items.some((p: { imagePath: string }) => p.imagePath === '/media/images/home/img-6048.webp')).toBe(true);
     for (const item of photos.items) {
       expect(item.category).toBe('profile');
     }

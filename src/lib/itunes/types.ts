@@ -73,6 +73,8 @@ export interface CoverItem {
   imagePath?: string;
   /** Back-of-cover text shown on flip. */
   flipText?: string;
+  /** Profile photos reveal their caption only on the back of the cover. */
+  captionOnBack?: boolean;
 }
 
 export interface CoverflowData {

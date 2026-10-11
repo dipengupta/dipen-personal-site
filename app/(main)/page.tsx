@@ -3,8 +3,9 @@ import Hero, { type HeroImage } from '@/components/main/Hero';
 import Mosaic, { type MosaicImage } from '@/components/main/Mosaic';
 import { pictureData } from '@/components/main/Picture';
 import ViewCards from '@/components/main/ViewCards';
-import { HERO_PHOTOS, HOME } from '@/content/site';
+import { HOME } from '@/content/site';
 import { getSection } from '@/lib/content/queries';
+import { shufflePhotos } from '@/lib/main/photos';
 import { SECTIONS, sectionHref } from '@/lib/main/routes';
 import { siteConfigFromRequest } from '@/lib/site/request';
 
@@ -34,14 +35,10 @@ export default async function HomePage() {
     getSection('alison'),
   ]);
 
-  const byPath = new Map(photos.map((p) => [p.imagePath, p]));
-  const heroImages: HeroImage[] = HERO_PHOTOS.filter((src) => byPath.has(src)).map((src) => ({
-    ...pictureData(src),
-    alt: byPath.get(src)!.description || byPath.get(src)!.title,
+  const heroImages: HeroImage[] = shufflePhotos(photos).map((photo) => ({
+    ...pictureData(photo.imagePath),
+    alt: photo.title,
   }));
-  // Wide screens get the landscape photos, phones the portraits (CSS shows one hero per orientation).
-  const landscape = heroImages.filter((i) => i.width >= i.height);
-  const portrait = heroImages.filter((i) => i.width < i.height);
   const heroContent = (
     <>
       <h1>{HOME.greeting}</h1>
@@ -56,12 +53,7 @@ export default async function HomePage() {
 
   return (
     <>
-      <div className="hero-only-desktop">
-        <Hero images={landscape.length ? landscape : heroImages}>{heroContent}</Hero>
-      </div>
-      <div className="hero-only-mobile">
-        <Hero images={portrait.length ? portrait : heroImages}>{heroContent}</Hero>
-      </div>
+      <Hero images={heroImages}>{heroContent}</Hero>
 
       <section className="section" aria-labelledby="explore">
         <div className="section-head">

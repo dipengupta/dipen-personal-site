@@ -71,6 +71,8 @@ export interface FrameItem {
   imagePath?: string;
   /** Back-of-cover text for coverflow flip. */
   flipText?: string;
+  /** Profile photos reveal their caption only on the back of the cover. */
+  captionOnBack?: boolean;
   onSelect?: SelectSpec;
 }
 

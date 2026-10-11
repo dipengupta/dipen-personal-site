@@ -110,7 +110,8 @@ describe('iTunes loaders', () => {
     expect(data.kind).toBe('coverflow');
     expect(data.items.map((i) => i.label)).toEqual(['Sunset', 'Trail']);
     expect(data.items[0].imagePath).toBe('/img/sunset.webp');
-    expect(data.items[0].flipText).toBe('On the coast.');
+    expect(data.items[0].flipText).toBe('Sunset\n\nOn the coast.');
+    expect(data.items.every((item) => item.captionOnBack)).toBe(true);
     expect(data.items[1].flipText).toBe('Trail'); // empty description falls back to the title
   });
 
@@ -179,6 +180,7 @@ describe('iTunes loaders', () => {
     expect(data.kind).toBe('coverflow');
     expect(data.items[0]).toMatchObject({ label: 'Les Paul', sublabel: '2019', imagePath: '/img/lp.webp' });
     expect(data.items[0].flipText).toContain('(2019)');
+    expect(data.items[0].captionOnBack).toBeUndefined();
   });
 
   it('articles list carries the slug for lazy body loading', async () => {

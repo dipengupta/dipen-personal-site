@@ -48,6 +48,7 @@ describe('searchResultHref', () => {
     expect(searchResultHref('academic', 'project-1', '')).toBe('/about/projects#project-1');
     expect(searchResultHref('academic', 'education-1', '')).toBe('/about/journey#education-1');
     expect(searchResultHref('timeline', 'job-1', '')).toBe('/about/journey#job-1');
+    expect(searchResultHref('photos', 'photo-1', '')).toBe('/about/photos#photo-1');
   });
 });
 
@@ -62,6 +63,7 @@ describe('main-site route table', () => {
 
   it('has the agreed sections and unique hrefs', () => {
     expect(SECTIONS.map((s) => s.label)).toEqual(['Music', 'Collections', 'About', 'Misc']);
+    expect(SECTIONS.find((s) => s.id === 'about')!.pages.map((p) => p.href)).toContain('/about/photos');
     const hrefs = ALL_PAGES.map((p) => p.href);
     expect(new Set(hrefs).size).toBe(hrefs.length);
     for (const s of SECTIONS) for (const p of s.pages) expect(p.href.startsWith(`/${s.id}/`)).toBe(true);

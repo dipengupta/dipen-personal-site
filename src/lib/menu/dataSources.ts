@@ -238,7 +238,8 @@ async function photos(): Promise<FrameItem[]> {
     id: `photo-${p.id}`,
     label: p.title,
     imagePath: p.imagePath,
-    flipText: p.description || p.title,
+    flipText: [p.title, p.description].filter(Boolean).join('\n\n'),
+    captionOnBack: true,
   }));
 }
 

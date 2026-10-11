@@ -21,7 +21,9 @@ describe('seedDb', () => {
     expect(db.select().from(schema.uggEpisodes).all()).toHaveLength(217);
     expect(db.select().from(schema.concerts).all().length).toBeGreaterThan(50);
     expect(db.select().from(schema.wifiNames).all()).toHaveLength(25);
-    // Gallery items split by category: 11 profile + 10 kitchen + 221 alison.
+    // Gallery items split by category: 37 profile + 10 kitchen + 221 alison.
+    const photos = db.select().from(schema.galleryItems).where(eq(schema.galleryItems.category, 'profile')).all();
+    expect(photos).toHaveLength(37);
     const alison = db.select().from(schema.galleryItems).where(eq(schema.galleryItems.category, 'alison')).all();
     expect(alison).toHaveLength(221);
     // The Photos/Quotes toggle partitions the collection: a row either has

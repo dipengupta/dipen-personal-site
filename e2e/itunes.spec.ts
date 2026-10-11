@@ -70,6 +70,35 @@ test.describe('desktop iTunes view', () => {
     await expect(box).toHaveValue('');
   });
 
+  test('Photos includes the imported batch in Grid and Cover Flow', async ({ page }) => {
+    await page.getByTestId('itunes-sidebar').getByRole('button', { name: 'Photos', exact: true }).click();
+    const grid = page.getByTestId('itunes-grid');
+    await expect(grid.locator('img')).toHaveCount(37);
+    await expect(grid.locator('img[src="/media/images/home/img-6048.webp"]')).toBeAttached();
+    await expect(grid.locator('[class*="caption"]')).toHaveCount(0);
+    const gridPhoto = grid.getByRole('button', { name: 'Flip Fall colors by the water' });
+    await expect(gridPhoto.getByTestId('itunes-photo-back')).toHaveAttribute('aria-hidden', 'true');
+    await gridPhoto.click();
+    await expect(gridPhoto).toHaveAttribute('aria-pressed', 'true');
+    await expect(gridPhoto.getByTestId('itunes-photo-back')).toHaveAttribute('aria-hidden', 'false');
+    await expect(gridPhoto.getByTestId('itunes-photo-back')).toContainText('October 2026');
+    await gridPhoto.click();
+    await expect(gridPhoto).toHaveAttribute('aria-pressed', 'false');
+    await page.getByTestId('itunes-toolbar').getByRole('button', { name: 'Cover Flow' }).click();
+    await page.getByTestId('itunes-coverflow-scroll').fill('36');
+    await expect(page.getByTestId('itunes-coverflow-caption')).toHaveText('37 of 37');
+    const cover = page.getByTestId('itunes-focused-cover');
+    const back = cover.getByTestId('itunes-cover-back');
+    await expect(back).toHaveAttribute('aria-hidden', 'true');
+    await cover.click();
+    await expect(cover).toHaveAttribute('data-flipped', 'true');
+    await expect(back).toHaveAttribute('aria-hidden', 'false');
+    await expect(back).toContainText('Fall colors by the water');
+    await expect(back).toContainText('October 2026');
+    await page.getByTestId('itunes-coverflow').press('Escape');
+    await expect(back).toHaveAttribute('aria-hidden', 'true');
+  });
+
   test('playlists: arrow keys + Enter play a song (no double-click)', async ({ page }) => {
     // Only Spotify playlists render as buttons (Apple ones link out).
     await page.getByTestId('itunes-playlist').first().click();

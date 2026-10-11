@@ -35,6 +35,7 @@ function coverDim(offset: number): number {
 
 export default function CoverFlowView({ frame }: { frame: Frame }) {
   const setMaxScroll = useIpodStore((s) => s.setMaxScroll);
+  const handleInput = useIpodStore((s) => s.handleInput);
   const backTextRef = useRef<HTMLDivElement>(null);
   const items = frame.items;
   const focused = frame.selectedIndex;
@@ -79,8 +80,20 @@ export default function CoverFlowView({ frame }: { frame: Frame }) {
               <div
                 className={`${styles.card} ${isFocused && frame.flipped ? styles.flippedCard : ''}`}
                 data-testid={isFocused ? 'focused-cover' : undefined}
+                role={item.captionOnBack && isFocused ? 'button' : undefined}
+                tabIndex={item.captionOnBack && isFocused ? 0 : undefined}
+                aria-label={item.captionOnBack && isFocused ? `Flip ${item.label}` : undefined}
+                aria-pressed={item.captionOnBack && isFocused ? frame.flipped : undefined}
+                onClick={item.captionOnBack && isFocused ? () => handleInput({ type: 'select' }) : undefined}
+                onKeyDown={item.captionOnBack && isFocused ? (e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleInput({ type: 'select' });
+                  }
+                } : undefined}
               >
-                <div className={styles.cardFront}>
+                <div className={styles.cardFront} aria-hidden={item.captionOnBack ? isFocused && frame.flipped : undefined}>
                   {item.imagePath ? (
                     // eslint-disable-next-line @next/next/no-img-element -- fixed-size logical screen
                     <img src={item.imagePath} alt={item.label} className={styles.coverImage} loading="lazy" />
@@ -99,7 +112,7 @@ export default function CoverFlowView({ frame }: { frame: Frame }) {
                     )}
                   </div>
                 </div>
-                <div className={styles.cardBack} data-testid={isFocused ? 'cover-back' : undefined}>
+                <div className={styles.cardBack} data-testid={isFocused ? 'cover-back' : undefined} aria-hidden={item.captionOnBack ? !(isFocused && frame.flipped) : undefined}>
                   <div className={styles.backWindow}>
                     <div
                       ref={isFocused ? backTextRef : undefined}
@@ -117,7 +130,7 @@ export default function CoverFlowView({ frame }: { frame: Frame }) {
         })}
       </div>
       <div className={styles.caption}>
-        <span className={styles.captionTitle}>{current?.label}</span>
+        {!current?.captionOnBack && <span className={styles.captionTitle}>{current?.label}</span>}
         <span className={styles.captionIndex}>
           {focused + 1} of {items.length}
         </span>

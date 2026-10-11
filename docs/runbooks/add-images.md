@@ -15,6 +15,9 @@ npm run media:ingest -- --source ~/Pictures/alison-2026 --collection alison --ga
 # Kitchen wins / profile photos: gallery rows titled from the file name
 npm run media:ingest -- --source ~/Pictures/dinner --collection contact --gallery kitchen --slugify
 
+# Profile photos: shared by the homepage, About > Photos, iPod and iTunes
+npm run media:ingest -- --source ~/Pictures/profile --collection home --gallery profile --caption exif-date --slugify
+
 # A new guitar: just the files; add the row to guitars.json by hand (step 2)
 npm run media:ingest -- --source ~/Pictures/new-guitar --collection music
 ```
@@ -33,6 +36,23 @@ and it is what seed rows reference. Alison files follow `alison-NNN`.
   ingest cannot read pixels, so it is added by hand.
 - Guitars: add a row to `src/data/seed/guitars.json` with the new `imagePath`.
 - Anything else: use the same `/media/images/...` path.
+
+For profile photos, replace camera filenames in the generated titles with
+short descriptive captions. Check capture dates before displaying them;
+exports sometimes carry placeholder dates such as January 1980. Both
+orientations are included automatically in the homepage slideshow and
+`/about/photos`. The main site shuffles at server render time, while the
+device views keep seed order. Browse the homepage photos by swiping left/right,
+dragging with a mouse, or focusing the photo area and using arrow keys.
+About > Photos varies both the order and the
+desktop mosaic's row sizes on each load, showing full frames throughout.
+Profile-photo titles and descriptions appear on the backs of the iPod and
+iTunes photos when clicked. No curated hero list or schema change is needed.
+
+For local review, run `npm run seed` and `npm run dev`, then visit `/`,
+`/about/photos`, `/ipod` (Misc > Photos), and `/itunes` (Photos). Media files
+remain in the gitignored media directory. Push media and deploy only when
+the local changes are approved.
 
 ## 3. Verify, commit, ship
 

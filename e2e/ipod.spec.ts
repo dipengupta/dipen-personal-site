@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import gallerySeed from '../src/data/seed/gallery.json';
 
 test.skip(({ isMobile }) => isMobile, 'desktop keyboard suite');
 
@@ -89,7 +90,7 @@ test('photos cover flow shows profile pics and flips to captions', async ({ page
   await page.keyboard.press('Enter'); // Photos (first row)
   const coverflow = page.getByTestId('coverflow');
   await expect(coverflow).toBeVisible();
-  await expect(coverflow).toContainText('1 of 11');
+  await expect(coverflow).toContainText('1 of 37');
   // Side covers carry a soft dim; the focused one stays bright.
   await expect(coverflow.locator('[data-dimmed]').first()).toBeVisible();
   await expect(
@@ -97,12 +98,20 @@ test('photos cover flow shows profile pics and flips to captions', async ({ page
   ).toHaveCount(0);
   await page.keyboard.press('ArrowDown');
   await page.keyboard.press('ArrowDown');
-  await expect(coverflow).toContainText('3 of 11');
-  await page.keyboard.press('Enter');
+  await expect(coverflow).toContainText('3 of 37');
+  const caption = coverflow.locator('[class*="captionTitle"]');
+  await expect(caption).toHaveCount(0);
+  await expect(page.getByTestId('cover-back')).toHaveAttribute('aria-hidden', 'true');
+  await page.getByTestId('focused-cover').click();
   await expect(coverflow).toHaveAttribute('data-flipped', 'true');
+  await expect(page.getByTestId('cover-back')).toHaveAttribute('aria-hidden', 'false');
   await expect(page.getByTestId('cover-back')).not.toBeEmpty();
   await page.keyboard.press('Escape');
   await expect(coverflow).not.toHaveAttribute('data-flipped', 'true');
+  // The imported batch follows the original eleven photos in the shared seed.
+  for (let i = 0; i < 9; i++) await page.keyboard.press('ArrowDown');
+  await expect(coverflow).toContainText('12 of 37');
+  await expect(page.getByTestId('focused-cover').locator('img').first()).toHaveAttribute('src', gallerySeed.filter((p) => p.category === 'profile')[11].imagePath);
 });
 
 test('Misc > List: two groups, each a scrollable list of entries', async ({ page }) => {

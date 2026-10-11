@@ -12,6 +12,17 @@ database:
 All three read the same SQLite file, so a new recipe, photo, tweet or video
 shows up everywhere at once. Media (photos, videos) lives outside the repo.
 
+The homepage cycles through all profile photos on desktop and mobile.
+Both orientations appear in full beside the intro on wide screens, directly
+on the page background. On phones the intro sits below the photo, keeping
+faces clear. Swipe left/right, drag with a mouse, or focus the photo area and
+use arrow keys to browse; there are no visible controls or counters.
+About > Photos (`/about/photos`) shows the same collection in
+a mosaic of whole frames, with varied row sizes and a keyboard-accessible
+lightbox. The homepage order and gallery composition shuffle on each server
+page load. The iPod and iTunes Photos sections keep seed order and reveal
+captions only when a photo is flipped.
+
 ## Quickstart
 
 ```bash

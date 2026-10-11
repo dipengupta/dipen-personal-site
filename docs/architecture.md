@@ -68,7 +68,29 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 - **Images**: `src/components/main/Picture.tsx` renders `srcset` from the
   media manifest with intrinsic dimensions and a blur placeholder;
   `pictureData()` hands the same fields to client components.
-- **About**: two pages over three tables. `/about/journey` merges
+- **Profile photos**: all `getSection('photos')` rows appear in one homepage
+  slideshow on every viewport. Both orientations sit beside the intro on
+  desktop, directly on the page background without an outer panel. On phones
+  the intro sits below the photo so faces stay clear. Both
+  orientations use `object-fit: contain`. The slideshow preloads the next
+  image and retains the previous frame during its opacity crossfade. It has
+  swipe, mouse drag, and keyboard navigation without visible buttons or a
+  counter; it rests while hovered or focused and respects reduced motion and
+  hidden tabs. Pointer capture keeps a drag active outside the photo area.
+  `shufflePhotos` runs once on the server per page load, so hydration uses
+  the same order. `/about/photos` also randomizes row sizes with
+  `photoMosaicRows`: image aspect ratios set proportional widths in justified
+  desktop rows, while phones use portrait pairs and full-width landscapes.
+  Captions appear on hover/focus and in the shared `PhotoGrid` lightbox.
+  Stable `photo-<id>`
+  anchors are the destination for profile-photo search results. Device
+  Photos sections keep the shared API's seed order. Their loaders set
+  `captionOnBack` and put title plus description into `flipText`; captions
+  are omitted from the front. Clicking the focused photo flips it in iPod
+  Cover Flow, iTunes Grid, and iTunes Cover Flow. iTunes Cover Flow reuses
+  Grid's existing flip classes; the device stylesheets are unchanged.
+- **About**: Journey and Projects over three tables, plus Photos over the
+  existing `gallery_items` profile category. `/about/journey` merges
   `timeline_entries` (jobs) and `education` (schools) onto one line with
   `src/lib/main/journey.ts`, which parses the start of each authored span
   ("Feb '25 - Present") to interleave them newest first. No cards: every row is
@@ -80,7 +102,8 @@ git, URL-chosen views). `docs/runbooks/` has the step-by-step tasks.
 - **Search**: header dialog (Cmd/Ctrl+K) and `/search` both use
   `searchContent(db, q, { scope: 'main' })`; `src/lib/main/searchTargets.ts`
   maps a result's group + id to a page URL with a `#id` that
-  `FocusHash` scrolls to and highlights. The `academic` group is the one that
+  `FocusHash` scrolls to and highlights on load, hash changes, and client-side
+  page navigation. The `academic` group is the one that
   splits across two pages (schools to Journey, projects to Projects).
   iTunes keeps its own `entryId` path.
 - **URLs**: articles use slugs derived from their titles at seed time;

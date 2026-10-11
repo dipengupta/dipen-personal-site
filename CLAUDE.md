@@ -87,3 +87,11 @@ docker compose up --build
 - Sections have no landing pages; add retired URLs to `REDIRECTS` in
   `src/lib/main/routes.ts` rather than leaving 404s behind.
 - Live feed refreshes never block a request (`refreshInBackground`).
+- Profile photos (`gallery.json`, category `profile`) appear in the homepage
+  slideshow at every viewport, `/about/photos`, and the device Photos sections.
+  `shufflePhotos` runs on the server for the main site only; keep photo ids
+  stable for search links. Both photo orientations sit beside the intro on the
+  page background on desktop, with swipe/drag and keyboard navigation and no
+  visible controls or counter; the Photos page uses uncropped mosaic rows
+  with varied density and the shared lightbox. Device photo loaders set
+  `captionOnBack`; title and description appear only after flipping the cover.

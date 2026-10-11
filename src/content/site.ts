@@ -8,22 +8,6 @@ export const SITE_TAGLINE = 'Software developer, musician, Penn State graduate.'
 export const SITE_DESCRIPTION =
   "Dipen Gupta's personal website: guitars, videos, recipes, articles, collections, and a few other ways to browse it all.";
 
-/**
- * Hero photos, in order: the profile shots where the face is the subject
- * (paths under /media/images/home). Portrait photos are cropped high so the
- * face stays in frame on a wide hero.
- */
-export const HERO_PHOTOS = [
-  '/media/images/home/acoustic_profile.webp',
-  '/media/images/home/main.webp',
-  '/media/images/home/mountain-rails.webp',
-  '/media/images/home/indianapolis-suit.webp',
-  '/media/images/home/prof_guitar.webp',
-  '/media/images/home/bucees.webp',
-  '/media/images/home/tahoe-boat-flag.webp',
-  '/media/images/home/doubleneck_profile.webp',
-];
-
 export const HOME = {
   greeting: "Hi, I'm Dipen.",
   intro:
@@ -75,4 +59,5 @@ export const ABOUT = {
   journeyWorkLabel: 'Work',
   journeyEducationLabel: 'School',
   projectsIntro: 'Things I have built, on my own and with other people, newest first.',
+  photosIntro: 'A few places, a few guitars, and moments along the way. A new arrangement every time you visit. Open any photo for a closer look.',
 } as const;

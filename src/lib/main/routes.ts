@@ -46,6 +46,7 @@ export const SECTIONS: SectionDef[] = [
     pages: [
       { href: '/about/journey', label: 'Journey', blurb: 'Work and school, on one timeline.' },
       { href: '/about/projects', label: 'Projects', blurb: 'Things I have built, newest first.' },
+      { href: '/about/photos', label: 'Photos', blurb: 'Places, guitars, and moments along the way.' },
     ],
   },
   {

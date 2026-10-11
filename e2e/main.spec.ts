@@ -1,4 +1,30 @@
 import { expect, test, type Page } from '@playwright/test';
+import gallerySeed from '../src/data/seed/gallery.json';
+
+const profilePhotos = gallerySeed.filter((p) => p.category === 'profile');
+
+async function swipeHero(page: Page, direction: 'left' | 'right', touch: boolean) {
+  const stage = page.getByTestId('hero').locator('.hero-stage');
+  await stage.scrollIntoViewIfNeeded();
+  const box = (await stage.boundingBox())!;
+  const from = box.x + box.width * (direction === 'left' ? 0.75 : 0.25);
+  const to = box.x + box.width * (direction === 'left' ? 0.25 : 0.75);
+  const y = box.y + box.height / 2;
+  if (touch) {
+    const session = await page.context().newCDPSession(page);
+    await session.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: from, y }] });
+    for (let step = 1; step <= 6; step++) {
+      await session.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: from + (to - from) * step / 6, y }] });
+    }
+    await session.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+    await session.detach();
+  } else {
+    await page.mouse.move(from, y);
+    await page.mouse.down();
+    await page.mouse.move(to, y, { steps: 6 });
+    await page.mouse.up();
+  }
+}
 
 // The main website: every section renders real content, navigation and
 // search work, and the device views are one click away. Runs on both the
@@ -17,6 +43,7 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
   { path: '/collections/pennguytweets', heading: /pennguytweets/, item: '[data-testid="tweet-feed"] li' },
   { path: '/about/journey', heading: /Journey/, item: '[data-testid="journey"] [id^="job-"]' },
   { path: '/about/projects', heading: /Projects/, item: 'article[id^="project-"]' },
+  { path: '/about/photos', heading: /Photos/, item: '[data-testid="photo-grid"] figure' },
   { path: '/misc/concerts', heading: /Concerts/, item: 'li[id^="concert-"]' },
   { path: '/misc/list', heading: /List/, item: 'li[id^="list-"]' },
   { path: '/misc/wifi-names', heading: /Wi-Fi/, item: 'li[id^="wifi-"]' },
@@ -24,21 +51,22 @@ const PAGES: Array<{ path: string; heading: RegExp; item: string }> = [
 ];
 
 test.describe('main site', () => {
-  test('home: hero, explore index, other views, mosaic', async ({ page }) => {
+  test('home: hero, explore index, other views, mosaic', async ({ page, isMobile }) => {
     const errors: string[] = [];
     page.on('pageerror', (e) => errors.push(e.message));
     await page.goto('/');
     await expect(page.getByRole('heading', { level: 1, name: /Hi, I'm Dipen/ })).toBeVisible();
     const hero = page.getByTestId('hero').locator('visible=true');
+    await expect(page.getByTestId('hero')).toHaveCount(1);
     await expect(hero.locator('.hero-slide.is-current')).toHaveCount(1);
-    // Swiping left moves to the next photo.
-    const stage = hero.locator('.hero-stage');
-    const hb = (await stage.boundingBox())!;
-    await page.mouse.move(hb.x + hb.width * 0.7, hb.y + hb.height / 2);
-    await page.mouse.down();
-    await page.mouse.move(hb.x + hb.width * 0.3, hb.y + hb.height / 2, { steps: 6 });
-    await page.mouse.up();
-    await expect(hero.locator('.hero-dots [aria-current="true"]')).toHaveAttribute('aria-label', 'Photo 2');
+    const current = hero.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    await swipeHero(page, 'left', isMobile);
+    await expect(current).not.toHaveAttribute('src', initial);
+    await swipeHero(page, 'right', isMobile);
+    await expect(current).toHaveAttribute('src', initial);
+    await expect(hero.getByRole('button')).toHaveCount(0);
+    await expect(hero.locator('.hero-controls, .hero-count')).toHaveCount(0);
     await expect(page.getByRole('heading', { name: 'Explore' })).toBeVisible();
     await expect(page.locator('.index-row')).toHaveCount(4);
     await expect(page.getByTestId('view-card-ipod')).toHaveAttribute('href', /ipod/);
@@ -54,6 +82,110 @@ test.describe('main site', () => {
     await expect(page).toHaveURL(/\/$/);
     await expect(page.getByTestId('made-by')).toContainText(/Made from scratch by Dipen, last updated \w{3} '\d{2}/);
     expect(errors).toEqual([]);
+  });
+
+  test('the homepage shows both orientations, including every imported photo', async ({ page, isMobile }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    const hero = page.getByTestId('hero');
+    expect(await hero.evaluate((el) => getComputedStyle(el).backgroundColor)).toBe('rgba(0, 0, 0, 0)');
+    expect(await hero.evaluate((el) => getComputedStyle(el).borderRadius)).toBe('0px');
+    const seen: string[] = [];
+    const orientations = new Set<string>();
+    for (let i = 0; i < profilePhotos.length; i++) {
+      const current = hero.locator('.hero-slide.is-current .hero-img');
+      seen.push((await current.getAttribute('src'))!);
+      orientations.add((await hero.getAttribute('data-orientation'))!);
+      expect(await current.evaluate((img) => getComputedStyle(img).objectFit)).toBe('contain');
+      if (await hero.getAttribute('data-orientation') === 'portrait') {
+        const imageBox = (await current.boundingBox())!;
+        const copyBox = (await hero.locator('.hero-content').boundingBox())!;
+        if (isMobile) expect(imageBox.y + imageBox.height).toBeLessThanOrEqual(copyBox.y + 1);
+        else expect(copyBox.x + copyBox.width).toBeLessThanOrEqual(imageBox.x + 1);
+      }
+      await hero.press('ArrowRight');
+      await expect(current).not.toHaveAttribute('src', seen[i]);
+    }
+    expect(new Set(seen)).toEqual(new Set(profilePhotos.map((p) => p.imagePath)));
+    expect(orientations).toEqual(new Set(['portrait', 'landscape']));
+    await expect(hero.getByRole('link', { name: 'All photos' })).toHaveCount(0);
+    await expect(hero.getByRole('button', { name: /Pause|Play slideshow/ })).toHaveCount(0);
+  });
+
+  test('the slideshow advances automatically and rests while focused', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'no-preference' });
+    await page.clock.install();
+    await page.goto('/');
+    const hero = page.getByTestId('hero');
+    const current = hero.locator('.hero-slide.is-current .hero-img');
+    const initial = (await current.getAttribute('src'))!;
+    await page.clock.fastForward(8000);
+    await expect(current).not.toHaveAttribute('src', initial);
+    const second = (await current.getAttribute('src'))!;
+    await hero.focus();
+    await page.clock.fastForward(16000);
+    await expect(current).toHaveAttribute('src', second);
+    await page.keyboard.press('ArrowRight');
+    await expect(current).not.toHaveAttribute('src', second);
+  });
+
+  test('page loads start with randomized homepage photos', async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.goto('/');
+    const starts = new Set<string>();
+    for (let load = 0; load < 5; load++) {
+      const current = page.getByTestId('hero').locator('.hero-slide.is-current .hero-img');
+      await expect(current).toHaveCount(1);
+      const src = (await current.getAttribute('src'))!;
+      expect(profilePhotos.some((photo) => photo.imagePath === src)).toBe(true);
+      starts.add(src);
+      if (load < 4) await page.reload();
+    }
+    expect(starts.size).toBeGreaterThan(1);
+  });
+
+  test('About photos form a fresh mosaic, preserve whole frames, and open in a lightbox', async ({ page, isMobile }) => {
+    await page.goto('/about/photos');
+    const tiles = page.locator('.photo-grid-mosaic .photo-tile');
+    await expect(tiles).toHaveCount(profilePhotos.length);
+    const before = await tiles.locator('img').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')));
+    await page.reload();
+    const after = await tiles.locator('img').evaluateAll((imgs) => imgs.map((img) => img.getAttribute('src')));
+    expect(new Set(after)).toEqual(new Set(before));
+    expect(after).not.toEqual(before);
+    const rowCounts = await page.locator('.photo-mosaic-row').evaluateAll((rows) => rows.map((row) => row.childElementCount));
+    expect(rowCounts.reduce((sum, count) => sum + count, 0)).toBe(profilePhotos.length);
+    expect(rowCounts.every((count) => count >= 3)).toBe(true);
+    if (!isMobile) {
+      for (const row of await page.locator('.photo-mosaic-row').all()) {
+        const heights = await row.locator('.photo-tile').evaluateAll((tiles) => tiles.map((tile) => tile.getBoundingClientRect().height));
+        expect(Math.max(...heights) - Math.min(...heights)).toBeLessThan(2);
+      }
+    }
+    const ratios = await tiles.locator('img').evaluateAll((imgs) => imgs.map((img) => {
+      const box = img.getBoundingClientRect();
+      return { displayed: box.width / box.height, intrinsic: Number(img.getAttribute('width')) / Number(img.getAttribute('height')) };
+    }));
+    for (const ratio of ratios) expect(ratio.displayed).toBeCloseTo(ratio.intrinsic, 1);
+    const firstButton = tiles.first().getByRole('button');
+    await firstButton.focus();
+    await page.keyboard.press('Enter');
+    const dialog = page.locator('dialog.lightbox');
+    await expect(dialog).toBeVisible();
+    await expect(dialog.locator('img')).toHaveAttribute('src', after[0]!.replace('.webp', '-1600.webp'));
+    await page.keyboard.press('ArrowRight');
+    await expect(dialog.locator('.lightbox-caption')).toContainText(`2 / ${profilePhotos.length}`);
+    await page.keyboard.press('Escape');
+    await expect(dialog).toBeHidden();
+    await expect(firstButton).toBeFocused();
+  });
+
+  test('photo search links highlight the matching gallery tile', async ({ page }) => {
+    await page.goto('/search?q=Fall%20colors%20by%20the%20water');
+    const result = page.getByRole('link', { name: 'Fall colors by the water' });
+    await expect(result).toHaveAttribute('href', /\/about\/photos#photo-\d+/);
+    await result.click();
+    await expect(page.locator('.photo-tile.is-focused')).toContainText('Fall colors by the water');
   });
 
   for (const p of PAGES) {
@@ -256,7 +388,7 @@ test.describe('main site on a phone', () => {
   });
 
   test('nothing scrolls sideways', async ({ page }) => {
-    for (const path of ['/', '/music/guitars', '/collections/recipes', '/collections/pennguytweets', '/about/journey']) {
+    for (const path of ['/', '/music/guitars', '/collections/recipes', '/collections/pennguytweets', '/about/journey', '/about/photos']) {
       await page.goto(path);
       const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
       expect(overflow, path).toBeLessThanOrEqual(1);

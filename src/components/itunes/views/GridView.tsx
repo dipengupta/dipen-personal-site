@@ -18,10 +18,12 @@ export default function GridView({ items, scale = 1, focusId }: { items: CoverIt
             type="button"
             ref={item.id === focusId ? setFocusRef : undefined}
             className={styles.cell}
+            aria-label={item.captionOnBack ? `Flip ${item.label}` : undefined}
+            aria-pressed={item.captionOnBack ? flipped === item.id : undefined}
             onClick={() => setFlipped((f) => (f === item.id ? null : item.id))}
           >
             <div className={`${styles.card} ${flipped === item.id ? styles.flipped : ''}`}>
-              <div className={styles.front}>
+              <div className={styles.front} aria-hidden={item.captionOnBack ? flipped === item.id : undefined}>
                 {item.imagePath ? (
                   // eslint-disable-next-line @next/next/no-img-element -- committed pre-optimized WebP
                   <img src={item.imagePath} alt={item.label} className={styles.image} loading="lazy" decoding="async" />
@@ -29,12 +31,12 @@ export default function GridView({ items, scale = 1, focusId }: { items: CoverIt
                   <div className={styles.placeholder}>☕</div>
                 )}
               </div>
-              <div className={styles.back}>
+              <div className={styles.back} data-testid={item.captionOnBack ? 'itunes-photo-back' : undefined} aria-hidden={item.captionOnBack ? flipped !== item.id : undefined}>
                 <p className={styles.backText}>{item.flipText ?? item.label}</p>
               </div>
             </div>
-            <span className={styles.caption}>{item.label}</span>
-            {item.sublabel && <span className={styles.sub}>{item.sublabel}</span>}
+            {!item.captionOnBack && <span className={styles.caption}>{item.label}</span>}
+            {!item.captionOnBack && item.sublabel && <span className={styles.sub}>{item.sublabel}</span>}
           </button>
         ))}
       </div>

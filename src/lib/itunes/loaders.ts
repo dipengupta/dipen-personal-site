@@ -231,7 +231,13 @@ async function kitchen(): Promise<SectionData> {
 
 async function photos(): Promise<SectionData> {
   const { items } = await fetchJson<{ items: GalleryRow[] }>('/api/content/photos');
-  return { kind: 'coverflow', items: galleryCovers(items, 'photo') };
+  return { kind: 'coverflow', items: items.map((p) => ({
+    id: `photo-${p.id}`,
+    label: p.title,
+    imagePath: p.imagePath,
+    flipText: [p.title, p.description].filter(Boolean).join('\n\n'),
+    captionOnBack: true,
+  })) };
 }
 
 async function alison(): Promise<SectionData> {

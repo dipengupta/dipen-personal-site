@@ -22,7 +22,7 @@ export function searchResultHref(type: string, id: string, title: string): strin
     case 'photos':
       if (id.startsWith('dish-')) return '/collections/recipes';
       if (id.startsWith('alison-')) return `/collections/alison#${id}`;
-      return `/#${id}`;
+      return `/about/photos#${id}`;
     case 'mugs':
       return `/collections/mugs-vinyls-and-magnets#${id}`;
     case 'timeline':
