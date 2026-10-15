@@ -4363,26 +4363,6 @@
       "takenAt": "2025-08-02T18:34:27.000Z",
       "blur": "data:image/webp;base64,UklGRkwAAABXRUJQVlA4IEAAAAAwAgCdASoMABAAA4BaJYwCdH8AFc2y1ggToAD5ObbBxj7dFt/IZzdhxGqqz/hOOhORsrCK4phga7BDoIIUQAAA"
     },
-    "/media/images/home/img-0566.webp": {
-      "width": 599,
-      "height": 800,
-      "source": {
-        "width": 3027,
-        "height": 4036
-      },
-      "variants": {
-        "400": {
-          "width": 300,
-          "height": 400
-        },
-        "1600": {
-          "width": 1200,
-          "height": 1600
-        }
-      },
-      "takenAt": "2025-05-31T18:10:30.000Z",
-      "blur": "data:image/webp;base64,UklGRnwAAABXRUJQVlA4IHAAAADQAQCdASoMABAAA4BaJYgCdADZWPWVgAD+6ktRXfXxlppVnbcwjLAdCq1AhmymvbHkGoIHcsnqKi8C3vTXq5BIHQZUFDcLmxm+1gW7pqnxnoBK53Hcs501IK6KP/+hORSi2wCaDp1kOiuwBOsesAAA"
-    },
     "/media/images/home/img-0617.webp": {
       "width": 600,
       "height": 800,
@@ -4542,6 +4522,26 @@
       },
       "takenAt": "2026-06-18T11:34:19.000Z",
       "blur": "data:image/webp;base64,UklGRloAAABXRUJQVlA4IE4AAAAQAgCdASoMABAAA4BaJQBOgCHc83ouv0iAAP5BNrvaIk7DVFYavL/0SYlin8scdkrBa/qUMcDqxmyZYhznw9rAk0+EkTafHxsFzhWrAAA="
+    },
+    "/media/images/home/img-3243.webp": {
+      "width": 600,
+      "height": 800,
+      "source": {
+        "width": 3024,
+        "height": 4032
+      },
+      "variants": {
+        "400": {
+          "width": 300,
+          "height": 400
+        },
+        "1600": {
+          "width": 1200,
+          "height": 1600
+        }
+      },
+      "takenAt": "2026-06-18T11:47:55.000Z",
+      "blur": "data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAwAgCdASoMABAAA4BaJbACdAEWYVzLdPyHYAD9dfMEsQIa+DbRLlXc96gfHnLXiK/iX/QOZN0VIKg/BVhHyF7KkuiLfOaj51Qadv/CQtXJfK4C+9MxzfUwIGEAiWkZTGV+bJrPAr2ZVXufAAA="
     },
     "/media/images/home/img-3314.webp": {
       "width": 600,
@@ -4920,6 +4920,66 @@
       },
       "takenAt": "2026-04-18T14:53:40.000Z",
       "blur": "data:image/webp;base64,UklGRm4AAABXRUJQVlA4IGIAAADQAQCdASoMABAAA4BaJQBdgMX63sCVgAD+1eCzuDcfgYeKVMOurFrMoprqvyn2MpSktH2V3WPwQYyWgNvHxClQCf8+OAmGwPf4NO9lg22z8PjYUDSaHY/qMD26EvNPg2AAAA=="
+    },
+    "/media/images/home/pxl-20261003-181207867.webp": {
+      "width": 800,
+      "height": 602,
+      "source": {
+        "width": 8160,
+        "height": 6144
+      },
+      "variants": {
+        "400": {
+          "width": 400,
+          "height": 301
+        },
+        "1600": {
+          "width": 1600,
+          "height": 1205
+        }
+      },
+      "takenAt": "2026-10-03T14:12:07.000Z",
+      "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAAAwAgCdASoQAAwAA4BaJbACdGuAAq2rkMC8AAD2Pg0h1RUzheWPY2dK4K3qQbcgUJVvcP3ugIdK7Q6H08xqB2A1MWhnrwVAYCJZL9WEFYejXhAA"
+    },
+    "/media/images/home/pxl-20261003-181627797.webp": {
+      "width": 602,
+      "height": 800,
+      "source": {
+        "width": 6144,
+        "height": 8160
+      },
+      "variants": {
+        "400": {
+          "width": 301,
+          "height": 400
+        },
+        "1600": {
+          "width": 1205,
+          "height": 1600
+        }
+      },
+      "takenAt": "2026-10-03T14:16:27.000Z",
+      "blur": "data:image/webp;base64,UklGRmoAAABXRUJQVlA4IF4AAAAQAgCdASoMABAAA4BaJbACdAEQXBwWC4lAAPdPyDHKwF+jZX9NQEh+BSOynRTXCekVJddSYb9l8ZcYevBMYH7/nrFfch5uWP8+uExjoTfdNnBGBH07j12DNDqnNAAA"
+    },
+    "/media/images/home/pxl-20261003-181633562.webp": {
+      "width": 800,
+      "height": 602,
+      "source": {
+        "width": 8160,
+        "height": 6144
+      },
+      "variants": {
+        "400": {
+          "width": 400,
+          "height": 301
+        },
+        "1600": {
+          "width": 1600,
+          "height": 1205
+        }
+      },
+      "takenAt": "2026-10-03T14:16:33.000Z",
+      "blur": "data:image/webp;base64,UklGRmgAAABXRUJQVlA4IFwAAACwAQCdASoQAAwAA4BaJbACdAC5OWPgAPeh1Ev1GAsqaxbC/eCGMXCfWkkbZH/wxp8YATALfArkQ5ljqWp3PeQRkW/eYw4kTaeu7Opz0/8jbZj2BxEARDsQgLgAAA=="
     },
     "/media/images/home/tahoe-boat-flag.webp": {
       "width": 600,

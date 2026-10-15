@@ -29,7 +29,7 @@ describe('/api/content/[section]', () => {
     const photos = await (await getContent(req, params({ section: 'photos' }))).json();
     const profileSeed = gallerySeed.filter((p) => p.category === 'profile');
     expect(photos.items.map((p: { imagePath: string }) => p.imagePath)).toEqual(profileSeed.map((p) => p.imagePath));
-    expect(photos.items).toHaveLength(37);
+    expect(photos.items).toHaveLength(40);
     expect(photos.items.some((p: { imagePath: string }) => p.imagePath === '/media/images/home/img-6048.webp')).toBe(true);
     for (const item of photos.items) {
       expect(item.category).toBe('profile');

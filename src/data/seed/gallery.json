@@ -1521,12 +1521,6 @@
     "category": "profile"
   },
   {
-    "title": "A burgundy suit",
-    "description": "May 2025",
-    "imagePath": "/media/images/home/img-0566.webp",
-    "category": "profile"
-  },
-  {
     "title": "Suited up",
     "description": "May 2025",
     "imagePath": "/media/images/home/img-0617.webp",
@@ -1656,6 +1650,30 @@
     "title": "Fall colors by the water",
     "description": "October 2026",
     "imagePath": "/media/images/home/img-6048.webp",
+    "category": "profile"
+  },
+  {
+    "title": "By the plane on the glacier",
+    "description": "June 2026",
+    "imagePath": "/media/images/home/img-3243.webp",
+    "category": "profile"
+  },
+  {
+    "title": "Reflections on the lake",
+    "description": "October 2026",
+    "imagePath": "/media/images/home/pxl-20261003-181207867.webp",
+    "category": "profile"
+  },
+  {
+    "title": "Below the autumn ridge",
+    "description": "October 2026",
+    "imagePath": "/media/images/home/pxl-20261003-181627797.webp",
+    "category": "profile"
+  },
+  {
+    "title": "Autumn at the lakeside",
+    "description": "October 2026",
+    "imagePath": "/media/images/home/pxl-20261003-181633562.webp",
     "category": "profile"
   }
 ]
