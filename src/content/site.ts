@@ -4,7 +4,7 @@
  * captions, tweets) comes from the database and is rendered as written.
  */
 export const SITE_NAME = 'Dipen Gupta';
-export const SITE_TAGLINE = 'Software developer, musician, Penn State graduate.';
+export const SITE_TAGLINE = 'Software developer, musician and Penn State graduate.';
 export const SITE_DESCRIPTION =
   "Dipen Gupta's personal website: guitars, videos, recipes, articles, collections, and a few other ways to browse it all.";
 
@@ -55,9 +55,9 @@ export const ABOUT = {
   intro:
     "I'm Dipen: a software developer by trade, a guitarist since 2009, and a collector of small things (mugs, magnets, vinyls, recipes). I grew up in Mumbai, did my master's at Penn State Harrisburg, and now live and work in Pennsylvania.",
   journeyIntro:
-    'Every job and every classroom, on one line and newest first. Filled dots are work, hollow ones are school.',
+    'Every job and every classroom on one line, newest first. Filled dots are work, hollow ones are school.',
   journeyWorkLabel: 'Work',
   journeyEducationLabel: 'School',
-  projectsIntro: 'Things I have built, on my own and with other people, newest first.',
+  projectsIntro: 'Things I have built, on my own and with other people.',
   photosIntro: 'A few places, a few guitars, and moments along the way. A new arrangement every time you visit. Open any photo for a closer look.',
 } as const;

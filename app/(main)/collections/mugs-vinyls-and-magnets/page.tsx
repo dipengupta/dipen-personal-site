@@ -41,7 +41,6 @@ export default async function CollectiblesPage() {
             <div key={g.key}>
               <div className="group-head">
                 <h2 style={{ fontSize: '1.25rem' }}>{g.label}</h2>
-                <span className="muted">{rows.length}</span>
               </div>
               <ul className="compact-list">
                 {rows.map((m) => (

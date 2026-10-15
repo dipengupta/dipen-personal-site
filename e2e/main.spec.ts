@@ -384,6 +384,18 @@ test.describe('main site', () => {
     });
   }
 
+  // Group headings on these two pages carry no item count: the bare number
+  // beside the label read as "Cities, 17" and "2024, 9".
+  test('concert years and mug groups show no count beside the heading', async ({ page }) => {
+    await page.goto('/misc/concerts');
+    await expect(page.locator('.section-head h2').first()).toBeVisible();
+    await expect(page.locator('.section-head .muted')).toHaveCount(0);
+
+    await page.goto('/collections/mugs-vinyls-and-magnets');
+    await expect(page.locator('.group-head h2').first()).toBeVisible();
+    await expect(page.locator('.group-head .muted')).toHaveCount(0);
+  });
+
   test('article, recipe and spice blend detail pages open from their lists', async ({ page }) => {
     await page.goto('/collections/articles');
     await page.locator('[data-testid="article-list"] a').first().click();

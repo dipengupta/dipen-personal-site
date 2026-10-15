@@ -2,7 +2,7 @@
 export const MUSIC = {
   intro: "I've loved music for as long as I can remember. Here are the guitars I have collected over the years, and the places where I put the playing.",
   guitars: {
-    blurb: 'The collection, newest first, from the latest Les Paul back to the first acoustic in 2009.',
+    blurb: 'From the latest Les Paul back to the first acoustic in 2009.',
   },
   youtube: {
     heading: 'YouTube',

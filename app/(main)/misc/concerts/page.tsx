@@ -17,7 +17,6 @@ export default async function ConcertsPage() {
         <section key={year} className="section" style={{ marginBlock: '2rem' }}>
           <div className="section-head">
             <h2>{year}</h2>
-            <span className="muted">{rows.length}</span>
           </div>
           <ul className="list-plain">
             {rows.map((c) => (
