@@ -29,6 +29,10 @@ scripts/media/push-fly.sh                                # images + videos onto 
 `fly.toml` ships with `min_machines_running = 1` and `auto_stop_machines =
 "off"` (no cold starts). Never scale past one machine: SQLite on a volume.
 
+The machine is `shared-cpu-1x` with 512MB (`[[vm]]` in `fly.toml`). Measured
+on 2026-11-09, next-server peaked at about 130MB, so 512MB leaves headroom
+without swap. If `fly logs` ever shows OOM kills, raise `memory` and redeploy.
+
 ## Domain and certificates
 
 Done once, on 2026-09-02, for `dipengupta.com` (registered at Porkbun). The
